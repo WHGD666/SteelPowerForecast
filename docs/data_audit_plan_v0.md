@@ -1,6 +1,6 @@
 # 数据审计计划 v0
 
-本文件只定义审计范围，不执行数据处理和模型训练。
+本文件定义审计范围和放行门禁。审计脚本已执行，但由于边界重复和测试标签可见性，当前门禁状态为 BLOCKED，不允许进入模型训练。
 
 ## 审计范围
 
@@ -28,3 +28,11 @@
 - 测试标签不进入开发特征或模型选择。
 - 每个异常字段都有保留、修复或剔除理由。
 - 协议草案中的待确认问题被标记为已确认或阻塞。
+
+## 已执行脚本
+
+```powershell
+D:\anaconda\envs\vocs\python.exe src/data_audit.py --root . --out outputs/data_audit_v0
+```
+
+机器可读结果保存在本地 `outputs/data_audit_v0/`，包括 `audit_report.json`、`audit_report.md` 和 `csv_summary.csv`。该目录被 Git 忽略，不上传原始数据或测试标签。
