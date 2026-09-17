@@ -1,0 +1,33 @@
+# Competition data is supplied locally and must not be uploaded to the public repo.
+data/*
+test/*
+!data/.gitkeep
+!test/.gitkeep
+
+# Generated artifacts
+outputs/*
+experiments/*
+!outputs/.gitkeep
+!experiments/.gitkeep
+manifests/*.json
+manifests/*.csv
+
+# Python and local tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+.idea/
+.vscode/
+
+# Local logs, checkpoints and secrets
+*.log
+*.pth
+*.pt
+*.pkl
+*.ckpt
+.env

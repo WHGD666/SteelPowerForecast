@@ -1,0 +1,27 @@
+protocol_version: v0-draft
+status: draft
+project: IronFlow
+time_column: datetime
+sampling_minutes: 15
+targets:
+  - generator_1
+  - generator_all
+horizons:
+  short_steps: 8
+  long_steps: 96
+primary_metric: 1-MAPE
+split:
+  strategy: rolling_time_origin
+  random_split: false
+  seed: 42
+information_policy:
+  use_future_rows: false
+  use_test_targets: false
+  use_external_data: false
+  use_external_pretrained_weights: false
+open_questions:
+  - official_submission_format
+  - mape_zero_and_missing_policy
+  - gas_units_and_time_integral
+  - gas_holder_capacity_mapping
+  - unit_commitment_mapping_for_aggregated_load
