@@ -11,6 +11,9 @@ experiments/*
 !experiments/.gitkeep
 manifests/*.json
 manifests/*.csv
+manifests/*.sha256
+!manifests/splits_v1.csv
+!manifests/splits_v1.sha256
 
 # Python and local tooling
 __pycache__/

@@ -1,0 +1,56 @@
+experiment_version: baseline_v1
+status: frozen
+seed: 42
+prepared_directory: outputs/prepared_v1
+prepared_train_file: train_prepared.csv
+preparation_manifest_file: preparation_manifest.json
+split_config: configs/splits_v1.yaml
+split_assignment_file: manifests/splits_v1.csv
+targets:
+  - generator_1
+  - generator_all
+horizons_steps: [1, 2, 3, 4, 5, 6, 7, 8]
+models:
+  - persistence
+  - seasonal_day
+  - lightgbm_direct
+seasonal_day:
+  period_steps: 96
+lightgbm_direct:
+  strategy: one_model_per_target_and_horizon
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+features:
+  use_prepared_input_schema: true
+  target_lags_steps: [1, 4, 8, 16, 32, 96, 192, 672]
+  calendar:
+    - hour_sin
+    - hour_cos
+    - day_of_week_sin
+    - day_of_week_cos
+metrics:
+  primary: mape
+  score: 1-mape
+  zero_actual_policy: exclude_and_count
+  diagnostics:
+    - mae
+    - rmse
+output:
+  root: outputs/baseline_runs
+  save_predictions: true
+  save_metrics_csv: true
+  save_manifest: true

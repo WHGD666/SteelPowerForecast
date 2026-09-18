@@ -1,0 +1,36 @@
+split_version: v1
+status: frozen
+frequency_minutes: 15
+maximum_horizon_steps: 8
+targets:
+  - generator_1
+  - generator_all
+development_folds:
+  - fold_id: dev_01
+    train_end: '2025-01-31 23:45:00'
+    validation_origin_start: '2025-02-01 00:00:00'
+    validation_origin_end: '2025-02-02 23:45:00'
+  - fold_id: dev_02
+    train_end: '2025-02-28 23:45:00'
+    validation_origin_start: '2025-03-01 00:00:00'
+    validation_origin_end: '2025-03-02 23:45:00'
+  - fold_id: dev_03
+    train_end: '2025-03-31 23:45:00'
+    validation_origin_start: '2025-04-01 00:00:00'
+    validation_origin_end: '2025-04-02 23:45:00'
+sealed_holdout:
+  fold_id: holdout_01
+  train_end: '2025-04-28 23:45:00'
+  validation_origin_start: '2025-04-29 00:00:00'
+  validation_origin_end: '2025-04-30 22:00:00'
+  sealed: true
+policy:
+  random_split: false
+  expanding_training_window: true
+  validation_origin_step_minutes: 15
+  labels_after_train_end_for_model_fit: forbidden
+  observations_after_each_origin_for_features: forbidden
+  sealed_holdout_metrics_before_candidate_freeze: forbidden
+output:
+  assignment_file: manifests/splits_v1.csv
+  fingerprint_file: manifests/splits_v1.sha256

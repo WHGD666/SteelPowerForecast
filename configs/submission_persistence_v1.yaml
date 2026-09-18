@@ -1,0 +1,27 @@
+submission_version: persistence_v1
+status: candidate_for_probe_submission
+competition_stage: prelim
+team_name: 这模型调的有力量
+source_development_run_id: 20260918T020820Z_af4c0587_74e8c6f5
+selected_model: persistence
+selection_rule: lowest_pooled_development_mape
+prepared_directory: outputs/prepared_v1
+prepared_input_file: input.csv
+prepared_test_file: test_prepared.csv
+preparation_manifest_file: preparation_manifest.json
+targets:
+  - generator_1
+  - generator_all
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+input_policy:
+  include_cleaned_current_targets_with_original_names: true
+  drop_duplicate_current_target_features: true
+  preserve_other_prepared_input_columns: true
+prediction_policy:
+  each_horizon_uses_current_observed_target: true
+  decimal_places: 6
+output:
+  root: outputs/submissions
+  input_file: input.csv
+  short_result_file: s_result.csv
+  archive_suffix: gas_predict_prelim.zip
