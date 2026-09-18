@@ -4,7 +4,7 @@ IronFlow 是 AIC AI+钢铁产业命题赛的项目根目录，任务方向为煤
 
 ## 当前阶段
 
-当前处于 Phase 2 前置门禁：只读审计、初赛质量风险筛查和因果清洗 v1 已执行，预测信息集和初赛短周期输出契约 v1 已冻结。评分底层口径仍待确认，尚未开始模型训练或调度优化。
+当前已完成 Phase 4 Baseline 建立与第一份初赛探针提交：只读审计、因果清洗 v1、预测信息集、滚动切分、短周期输出契约、三组基线比较和提交包校验均已形成可复现记录。尚未开始受控调参、深度模型或调度优化，内部封存留出集仍未使用。
 
 当前原则：
 
@@ -64,3 +64,17 @@ D:\anaconda\envs\vocs\python.exe -m unittest tests/test_preparation_contract.py 
 ```
 
 派生数据仅保存在本地 `outputs/prepared_v1/`，不会覆盖或上传原始数据。清洗规则见 [cleaning_policy_v1.md](docs/cleaning_policy_v1.md)，执行证据见 [preparation_report_v1.md](docs/preparation_report_v1.md)。
+
+## Baseline 与官方探针记录
+
+当前里程碑结果见 [Baseline v1 结果记录](docs/baseline_result_v1.md)。机器可读的唯一来源为 [内部开发结果注册表](manifests/baseline_results_v1.csv) 和 [官方提交注册表](manifests/official_submissions.csv)。官方总分与内部验证 `1-MAPE` 的定义不同，不做直接等同。
+
+复现基础流程：
+
+```powershell
+D:\anaconda\envs\vocs\python.exe src/build_splits.py
+D:\anaconda\envs\vocs\python.exe -m pytest -q
+D:\anaconda\envs\vocs\python.exe src/run_baseline.py --config configs/baseline_v1.yaml
+D:\anaconda\envs\vocs\python.exe src/build_submission.py --config configs/submission_persistence_v1.yaml
+D:\anaconda\envs\vocs\python.exe src/render_results_report.py
+```
