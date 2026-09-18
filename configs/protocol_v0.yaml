@@ -1,5 +1,5 @@
 protocol_version: v0-draft
-status: draft
+status: draft-with-official-clarification
 project: IronFlow
 time_column: datetime
 sampling_minutes: 15
@@ -15,12 +15,16 @@ split:
   random_split: false
   seed: 42
 information_policy:
+  use_current_origin_observations: true
   use_future_rows: false
-  use_test_targets: false
+  use_future_test_targets: false
+  current_origin_target_observation: allowed_if_present_at_t
+  previous_predictions_as_features: allowed_for_rolling_inference
   use_external_data: false
   use_external_pretrained_weights: false
 open_questions:
-  - official_submission_format
+  - target_point_value_vs_interval_mean_in_scoring
+  - official_submission_input_template_and_origin_rows
   - mape_zero_and_missing_policy
   - gas_units_and_time_integral
   - gas_holder_capacity_mapping

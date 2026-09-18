@@ -391,7 +391,7 @@ def render_report(report: dict[str, Any]) -> str:
             lines.append(f"- 工作表 `{sheet['name']}`：{sheet['max_row']}×{sheet['max_column']}，非空行 {sheet['nonempty_row_count']}，公式 {sheet['formula_count']}。")
             if sheet["preview"]:
                 lines.append("  - 预览：" + "；".join(" | ".join("" if v is None else str(v) for v in row) for row in sheet["preview"][:4]))
-    lines.extend(["", "## 6. 审计结论", "", "当前审计结果只用于冻结数据事实和建模边界。只有解决所有 BLOCKER、确认测试标签隔离、解释时间边界与跨表缺口后，才允许进入 baseline。", ""])
+    lines.extend(["", "## 6. 审计结论", "", "当前审计结果只用于冻结数据事实和建模边界。按官方滚动预测答复，起点 t 的已提供观测（包括当前发电量）可以使用，但任何 t 之后的目标或观测都必须禁止。缺失、常量列和边界上下文需要在协议中明确处理后，才允许进入 baseline。", ""])
     return "\n".join(lines)
 
 
@@ -437,13 +437,13 @@ def main() -> int:
         if item["infinite_numeric_count"]:
             add("BLOCKER", "INFINITE_VALUE", f"{name} 存在 {item['infinite_numeric_count']} 个无穷数值。")
         if item["partition"] == "test" and item["test_target_presence"]:
-            add("BLOCKER", "TEST_LABEL_VISIBLE", f"{name} 测试文件含有目标列：{', '.join(item['test_target_presence'])}。")
+            add("WARN", "CURRENT_ORIGIN_TARGET_OBSERVATION", f"{name} 含有当前时刻目标观测：{', '.join(item['test_target_presence'])}；按官方滚动答复仅允许在对应起点 t 使用，不得读取 t 之后的目标。")
 
     if cross["train_test_timestamp_overlap_count"]:
-        add("BLOCKER", "TRAIN_TEST_OVERLAP", f"训练与测试时间戳有 {cross['train_test_timestamp_overlap_count']} 个交集，必须确认官方切分定义并防止泄漏。")
+        add("WARN", "BOUNDARY_CONTEXT_OVERLAP", f"训练与测试时间戳有 {cross['train_test_timestamp_overlap_count']} 个交集；按官方滚动答复可作为起点 t 的边界上下文，但必须禁止使用 t 之后数据。")
     for duplicate in cross["train_test_exact_duplicate_rows"]:
         if duplicate["count"]:
-            add("BLOCKER", "EXACT_TRAIN_TEST_DUPLICATE", f"{duplicate['family']} 训练/测试在共同时间戳上有 {duplicate['count']} 行全部字段相同，疑似边界上下文重复。")
+            add("WARN", "BOUNDARY_EXACT_DUPLICATE", f"{duplicate['family']} 训练/测试在共同时间戳上有 {duplicate['count']} 行全部字段相同；将其视为边界上下文，不作为独立泛化证据。")
 
     status = "BLOCKED" if any(f["severity"] == "BLOCKER" for f in findings) else ("WARN" if findings else "PASS")
     report = {
