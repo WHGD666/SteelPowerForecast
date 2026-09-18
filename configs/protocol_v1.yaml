@@ -1,0 +1,94 @@
+protocol_version: v1
+status: frozen-for-contract-pending-score-details
+project: IronFlow
+stage: prelim_short_forecast
+source_rules:
+  competition_pdf: 赛题内容.pdf
+  official_clarification_date: 2026-09-16
+time:
+  column: datetime
+  sampling_minutes: 15
+  timestamp_format: '%Y-%m-%d %H:%M:%S'
+  origin_policy: rolling_every_15_minutes
+targets:
+  order:
+    - generator_1
+    - generator_all
+  short_steps: [1, 2, 3, 4, 5, 6, 7, 8]
+  short_offsets_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+  long_steps: 96
+  target_value_semantics: unresolved_point_value_vs_interval_mean
+information_set:
+  at_origin_t:
+    allowed:
+      - all_provided_rows_at_or_before_t
+      - current_origin_target_observation_if_present
+      - known_calendar_and_price_schedule
+      - previous_predictions_from_earlier_origins
+    forbidden:
+      - any_observation_after_t
+      - any_target_after_t
+      - any_future_gas_consumption_after_t
+      - test_period_label_aggregation_or_reverse_inference
+  boundary_context_overlap: allowed_as_origin_context_only
+  external_data: forbidden
+  external_pretrained_weights: forbidden
+  online_inference_services: forbidden
+features:
+  original_columns_must_keep_names: true
+  engineered_prefix: feat_
+  datetime_is_key_not_numeric_feature: true
+  proxy_sensitive_columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+  all_empty_columns_policy: retain_in_audit_exclude_from_first_candidate
+  missing_value_policy: fold_local_or_history_only
+validation:
+  split_strategy: rolling_time_origin
+  random_split: false
+  current_origin_observations: simulate_as_available
+  future_targets_used_for_scoring_only: true
+  final_holdout: not_yet_assigned
+metrics:
+  competition_primary: 1-MAPE
+  score_detail: unresolved_zero_missing_and_aggregation_rules
+  diagnostic_metrics:
+    - MAE
+    - RMSE
+    - per_horizon_error
+    - regime_stratified_error
+submission:
+  prelim_archive: teamname_gas_predict_prelim.zip
+  encoding: utf-8
+  input_file: input.csv
+  short_result_file: s_result.csv
+  input_datetime_column: datetime
+  result_datetime_column: datetime
+  result_origin_rows: test_datetime_rows
+  result_no_missing_or_duplicate_origins: true
+  short_result_columns:
+    - datetime
+    - generator_1_t+15_pred
+    - generator_1_t+30_pred
+    - generator_1_t+45_pred
+    - generator_1_t+60_pred
+    - generator_1_t+75_pred
+    - generator_1_t+90_pred
+    - generator_1_t+105_pred
+    - generator_1_t+120_pred
+    - generator_all_t+15_pred
+    - generator_all_t+30_pred
+    - generator_all_t+45_pred
+    - generator_all_t+60_pred
+    - generator_all_t+75_pred
+    - generator_all_t+90_pred
+    - generator_all_t+105_pred
+    - generator_all_t+120_pred
+  prediction_decimal_places_minimum: 3
+open_questions:
+  - target_point_value_vs_interval_mean_in_official_score
+  - mape_zero_missing_and_multi_target_aggregation
+  - official_input_template_exact_origin_range
+  - gas_units_and_time_integral
+  - gas_holder_capacity_mapping

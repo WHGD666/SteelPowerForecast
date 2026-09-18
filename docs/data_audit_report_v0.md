@@ -2,7 +2,7 @@
 
 审计脚本：`src/data_audit.py`
 审计命令：`D:\anaconda\envs\vocs\python.exe src/data_audit.py --root . --out outputs/data_audit_v0`
-审计状态：**WARN，等待协议冻结后进入 baseline**
+审计状态：**WARN，信息集与初赛短周期输出契约 v1 已冻结，评分细节待确认**
 
 本报告基于赛题 PDF、`data_dictionary.xlsx`、`price.xlsx` 以及本地 CSV 的只读审计。原始文件没有被改写，未执行插值、填充、删除、重采样、异常值裁剪或模型实验。机器可读证据位于本地 `outputs/data_audit_v0/`，其中包含完整 SHA-256、字段统计、时间缺口、跨表关系和测试标签检查。
 
