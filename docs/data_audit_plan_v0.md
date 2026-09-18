@@ -36,3 +36,11 @@ D:\anaconda\envs\vocs\python.exe src/data_audit.py --root . --out outputs/data_a
 ```
 
 机器可读结果保存在本地 `outputs/data_audit_v0/`，包括 `audit_report.json`、`audit_report.md` 和 `csv_summary.csv`。该目录被 Git 忽略，不上传原始数据或测试标签。
+
+初赛质量项筛查命令：
+
+```powershell
+D:\anaconda\envs\vocs\python.exe src/data_quality_audit.py --root . --out outputs/data_quality_audit_v1
+```
+
+该筛查只生成缺失、重复、无效列和统计异常候选证据，不自动删除或修正原始值。详见 [data_quality_audit_v1.md](data_quality_audit_v1.md)。
