@@ -1,0 +1,49 @@
+cleaning_version: v1
+status: frozen
+source_policy:
+  raw_data_read_only: true
+  output_directory: outputs/prepared_v1
+time:
+  column: datetime
+  frequency: 15min
+  boundary_context_timestamp: '2025-05-01 00:00:00'
+targets:
+  - generator_1
+  - generator_all
+source_families:
+  - gas
+  - gas_holder
+  - gas_user
+  - load
+exclude_all_empty_columns:
+  - blast_furnace_3
+  - air_heater_3
+  - blast_furnace_gas_holder_1
+  - converter_user3
+missing_policy:
+  covariates:
+    method: causal_forward_fill
+    limit_steps: 4
+    create_missing_indicators: true
+  targets:
+    preserve_raw_missing: true
+    create_current_observation_feature: true
+    current_observation_fill: causal_forward_fill
+    limit_steps: 4
+  inserted_timestamps:
+    create_indicator: true
+outlier_policy:
+  mutate_values: false
+  global_thresholds_for_validation: forbidden
+  action: fit_flags_or_caps_inside_each_training_fold_only
+duplicate_policy:
+  duplicate_timestamp: error
+  duplicate_full_row: error
+output:
+  train_file: train_prepared.csv
+  test_file: test_prepared.csv
+  input_file: input.csv
+  manifest_file: preparation_manifest.json
+  encoding: utf-8
+  input_exclude_diagnostic_columns:
+    - feat_boundary_context_overlap

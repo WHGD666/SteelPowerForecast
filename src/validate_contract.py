@@ -114,6 +114,12 @@ def validate_submission(root: Path, input_path: Path | None, result_path: Path |
         errors.extend(check_time(frame, "input.csv", len(origins)))
         if list(parse_datetime(frame)) != list(origins):
             errors.append("input.csv: datetime origins do not exactly match test origins/order")
+        missing = {column: int(value) for column, value in frame.isna().sum().items() if value}
+        if missing:
+            errors.append(f"input.csv: missing values are not allowed in submitted features: {missing}")
+        constant = [column for column in frame.columns if column != "datetime" and frame[column].nunique(dropna=False) <= 1]
+        if constant:
+            errors.append(f"input.csv: constant non-time columns are not allowed: {constant}")
         extras = [column for column in frame.columns if column not in {"datetime"}]
         raw_columns = set().union(*[set(pd.read_csv(root / "data" / f"Pre_{family}.csv", nrows=0).columns) for family in ORIGINAL_FAMILIES])
         bad_extra = [column for column in extras if column not in raw_columns and not str(column).startswith("feat_")]

@@ -74,7 +74,7 @@ Excel 文件也已指纹化：`data_dictionary.xlsx` SHA-256 前 16 位为 `feba
 
 - 三类全空字段与训练区一致：`blast_furnace_3`、`air_heater_3`、`blast_furnace_gas_holder_1`、`converter_user3`。
 - `test/Pre_test_gas.csv` 的 `air_heater_5` 为 192 行常量 0；`test/Pre_test_gas_user.csv` 的 `converter_user1` 为 192 行常量 0。这些字段存在明显工况/停机状态差异，不能自动当作普通连续变量填充。
-- 测试输入仍有 3 个缺失单元格：`Pre_test_load.csv` 的两个目标列缺失，但它们本来就禁止进入输入；其他测试表缺失主要来自全空字段。
+- 测试输入仍有 3 个缺失单元格，均位于 `Pre_test_load.csv` 的当前目标观测。对应起点 `t` 的当前观测允许使用，但缺失时只能采用因果历史规则，不能读取未来目标；其他测试表缺失主要来自全空字段。
 
 原则：全空列先保留原始证据，但从第一版模型特征候选中排除；零值常量列保留为状态审计字段，是否剔除需结合字段语义和复赛数据确认。非全空缺失不得在全量数据上先插值或 `bfill`，必须在每个时间折内按可用历史信息拟合处理规则。
 

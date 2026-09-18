@@ -4,7 +4,7 @@ IronFlow 是 AIC AI+钢铁产业命题赛的项目根目录，任务方向为煤
 
 ## 当前阶段
 
-当前处于 Phase 1：只读数据审计和初赛质量风险筛查已执行，预测信息集和初赛短周期输出契约 v1 已冻结。评分底层口径仍待确认，尚未开始模型训练或调度优化。
+当前处于 Phase 2 前置门禁：只读审计、初赛质量风险筛查和因果清洗 v1 已执行，预测信息集和初赛短周期输出契约 v1 已冻结。评分底层口径仍待确认，尚未开始模型训练或调度优化。
 
 当前原则：
 
@@ -55,3 +55,12 @@ IronFlow 是 AIC AI+钢铁产业命题赛的项目根目录，任务方向为煤
 ```powershell
 D:\anaconda\envs\vocs\python.exe src/validate_contract.py --root .
 ```
+
+数据准备命令：
+
+```powershell
+D:\anaconda\envs\vocs\python.exe src/prepare_dataset.py --root . --config configs/cleaning_v1.yaml
+D:\anaconda\envs\vocs\python.exe -m unittest tests/test_preparation_contract.py -v
+```
+
+派生数据仅保存在本地 `outputs/prepared_v1/`，不会覆盖或上传原始数据。清洗规则见 [cleaning_policy_v1.md](docs/cleaning_policy_v1.md)，执行证据见 [preparation_report_v1.md](docs/preparation_report_v1.md)。

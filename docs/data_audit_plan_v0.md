@@ -44,3 +44,11 @@ D:\anaconda\envs\vocs\python.exe src/data_quality_audit.py --root . --out output
 ```
 
 该筛查只生成缺失、重复、无效列和统计异常候选证据，不自动删除或修正原始值。详见 [data_quality_audit_v1.md](data_quality_audit_v1.md)。
+
+因果清洗与派生数据生成：
+
+```powershell
+D:\anaconda\envs\vocs\python.exe src/prepare_dataset.py --root . --config configs/cleaning_v1.yaml
+```
+
+该步骤只在 `outputs/prepared_v1/` 生成派生文件；目标原值不填，协变量仅使用最多 4 步的历史前向填充，并保留缺失与边界标志。详见 [cleaning_policy_v1.md](cleaning_policy_v1.md)。

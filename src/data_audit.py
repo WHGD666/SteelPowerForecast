@@ -383,7 +383,7 @@ def render_report(report: dict[str, Any]) -> str:
     lines.extend(["", "## 4. 测试标签可见性", ""])
     for item in report["files"]:
         for target, detail in item.get("test_target_presence", {}).items():
-            lines.append(f"- `{item['file']}` 包含 `{target}`：非空 {detail['non_null']}，缺失 {detail['missing']}。该列必须从预测输入契约中排除。")
+            lines.append(f"- `{item['file']}` 包含 `{target}`：非空 {detail['non_null']}，缺失 {detail['missing']}。按官方滚动答复，仅对应起点 t 的当前观测可用，t 之后目标严格禁止。")
     lines.extend(["", "## 5. Excel 工作簿摘要", ""])
     for item in report["workbooks"]:
         lines.append(f"### `{item['file']}`")
