@@ -1,0 +1,35 @@
+metric_version: round2_v3_metrics_1
+status: frozen_for_v3_baseline
+
+primary:
+  error: mape
+  accuracy: 1-mape
+  zero_actual_policy: exclude_and_count
+  aggregation: pooled_over_valid_origin_horizon_cells
+
+required_views:
+  - short_overall
+  - long_overall
+  - short_by_target
+  - long_by_target
+  - target_by_horizon
+  - target_by_fold
+  - target_by_operating_regime
+
+diagnostics:
+  - mae
+  - rmse
+  - zero_actual_count
+  - missing_actual_count
+  - physical_violation_count
+  - adjacent_horizon_error_monotonicity_violations
+
+local_combined_accuracy:
+  formula: 0.5*short_accuracy+0.5*long_accuracy
+  official_score_claim: false
+
+engineering_targets:
+  short_accuracy_minimum: 0.915
+  long_accuracy_minimum: 0.86
+  short_accuracy_safe: 0.92
+  long_accuracy_safe: 0.87

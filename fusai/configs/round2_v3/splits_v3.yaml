@@ -1,0 +1,53 @@
+split_version: round2_v3_splits_1
+status: frozen_for_v3_baseline
+strategy: expanding_window_walk_forward
+origin_frequency: 15min
+raw_train_start: "2025-05-03 00:00:00"
+raw_train_end: "2025-09-30 23:59:00"
+maximum_horizon_minutes: 1440
+training_rule: "a training origin is eligible only when its t+1440 interval ends at or before train_end"
+validation_rule: "all validation origins and their complete t+1440 intervals must fit inside the raw training range"
+random_split: false
+
+folds:
+  - fold_id: wf_01_july_regular
+    role: model_selection
+    train_end: "2025-06-30 23:59:00"
+    validation_start: "2025-07-01 00:00:00"
+    validation_end: "2025-07-03 23:45:00"
+    regime_note: "early summer regular operation"
+
+  - fold_id: wf_02_august_regular
+    role: model_selection
+    train_end: "2025-07-31 23:59:00"
+    validation_start: "2025-08-01 00:00:00"
+    validation_end: "2025-08-03 23:45:00"
+    regime_note: "later summer regular operation"
+
+  - fold_id: wf_03_bf3_active
+    role: model_selection
+    train_end: "2025-09-02 23:59:00"
+    validation_start: "2025-09-03 00:00:00"
+    validation_end: "2025-09-05 23:45:00"
+    regime_note: "blast_furnace_3 recently active"
+
+  - fold_id: wf_04_late_september
+    role: model_selection
+    train_end: "2025-09-18 23:59:00"
+    validation_start: "2025-09-19 00:00:00"
+    validation_end: "2025-09-20 23:45:00"
+    regime_note: "late-September operating regime"
+
+  - fold_id: wf_05_holder1_active
+    role: model_selection
+    train_end: "2025-09-24 23:59:00"
+    validation_start: "2025-09-25 00:00:00"
+    validation_end: "2025-09-27 23:45:00"
+    regime_note: "blast_furnace_gas_holder_1 recently active"
+
+  - fold_id: wf_06_consumed_dev
+    role: consumed_development_only
+    train_end: "2025-09-27 23:59:00"
+    validation_start: "2025-09-28 00:00:00"
+    validation_end: "2025-09-29 23:45:00"
+    regime_note: "legacy experiments already inspected this period; never treat as sealed"

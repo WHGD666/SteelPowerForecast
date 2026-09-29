@@ -1,0 +1,15 @@
+{
+  "label_mode": "interval_mean_15min",
+  "generator_1": {
+    "mape_interval_mean": 0.10761601111543428,
+    "score_1_mape": 0.8923839888845657,
+    "best_c": 0.95,
+    "mape_at_best_c": 0.10065962629217991
+  },
+  "generator_all": {
+    "mape_interval_mean": 0.08541433028369066,
+    "score_1_mape": 0.9145856697163093,
+    "best_c": 0.96,
+    "mape_at_best_c": 0.07887874615787233
+  }
+}

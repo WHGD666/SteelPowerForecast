@@ -1,0 +1,26 @@
+{
+  "artifact_version": "round2_v3_labels_1",
+  "complete_intervals": 14494,
+  "datetime_max": "2025-09-30T23:45:00",
+  "datetime_min": "2025-05-03T00:00:00",
+  "incomplete_interval_starts": [
+    "2025-08-27T18:00:00",
+    "2025-09-09T08:15:00"
+  ],
+  "incomplete_intervals": 2,
+  "interval_closed": "left",
+  "interval_minutes": 15,
+  "label_formula": "t+h uses mean(t+h-15min through t+h-1min)",
+  "missing_target_fill": "forbidden",
+  "output": "data/prepared/round2_v3_labels_1/interval_targets_15min.csv",
+  "output_sha256": "5c14268d91d4abaa0e399228dc1c4805443207579a2ac44b7c693f87544bc81d",
+  "require_all_source_minutes": true,
+  "rows": 14496,
+  "source": "data/raw/train/Semi_load.csv",
+  "source_encoding": "utf-8-sig",
+  "source_sha256": "0d8c14e3abffe91137c18abde00ec19a62a42e80683f7ebda15da8bd955dc309",
+  "targets": [
+    "generator_1",
+    "generator_all"
+  ]
+}

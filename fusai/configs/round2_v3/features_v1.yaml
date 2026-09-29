@@ -1,0 +1,87 @@
+feature_version: round2_v3_features_1
+status: frozen_for_v3_baseline
+source_artifact: round2_v3_causal_base_1
+origin_frequency: 15min
+target_history_included: false
+future_observations_included: false
+
+signal_columns:
+  - blast_furnace_1
+  - blast_furnace_2
+  - blast_furnace_3
+  - blast_furnace_4
+  - blast_furnace_5
+  - coke_oven_1
+  - converter_1
+  - air_heater_1
+  - air_heater_2
+  - air_heater_3
+  - air_heater_4
+  - air_heater_5
+  - into_gas_mixed_coke
+  - into_gas_mixed_blast_furnace
+  - into_gas_mixed_converter
+  - blast_furnace_user1
+  - blast_furnace_user2
+  - blast_furnace_user3
+  - blast_furnace_user4
+  - converter_user1
+  - converter_user2
+  - blast_furnace_gas_holder_1
+  - blast_furnace_gas_holder_2
+  - generator_use_blast_furnace_gas
+  - generator_use_coke_gas
+  - generator_use_converter_gas
+
+derived_observed_aggregates:
+  blast_furnace_production_sum_observed:
+    operation: sum
+    columns: [blast_furnace_1, blast_furnace_2, blast_furnace_3, blast_furnace_4, blast_furnace_5]
+  blast_furnace_production_observed_count:
+    operation: count
+    columns: [blast_furnace_1, blast_furnace_2, blast_furnace_3, blast_furnace_4, blast_furnace_5]
+  blast_furnace_user_sum_observed:
+    operation: sum
+    columns: [blast_furnace_user1, blast_furnace_user2, blast_furnace_user3, blast_furnace_user4]
+  blast_furnace_user_observed_count:
+    operation: count
+    columns: [blast_furnace_user1, blast_furnace_user2, blast_furnace_user3, blast_furnace_user4]
+  generator_use_total_observed:
+    operation: sum
+    columns: [generator_use_blast_furnace_gas, generator_use_coke_gas, generator_use_converter_gas]
+  generator_use_observed_count:
+    operation: count
+    columns: [generator_use_blast_furnace_gas, generator_use_coke_gas, generator_use_converter_gas]
+  gas_holder_sum_observed:
+    operation: sum
+    columns: [blast_furnace_gas_holder_1, blast_furnace_gas_holder_2]
+
+history:
+  include_current: true
+  lag_minutes: [15, 60, 180, 720, 1440]
+  rolling_windows_minutes: [15, 60, 180, 720, 1440]
+  rolling_statistics: [mean, std]
+  rolling_minimum_observed_fraction: 0.8
+  missing_fraction_windows_minutes: [60, 1440]
+
+current_state_indicators:
+  include_suffixes: ["__missing", "__active"]
+  include_prefixes: ["timestamp_inserted__"]
+
+origin_calendar:
+  - hour_sin
+  - hour_cos
+  - minute_sin
+  - minute_cos
+  - dayofweek_sin
+  - dayofweek_cos
+  - is_weekend
+  - month
+  - day_of_month
+
+output:
+  directory: data/prepared/round2_v3_origin_features_1
+  train_file: train_origin_features.csv
+  test_file: test_origin_features.csv
+  float_format: "%.9g"
+  overwrite: false

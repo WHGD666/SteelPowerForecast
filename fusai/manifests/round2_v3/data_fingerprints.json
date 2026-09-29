@@ -1,0 +1,56 @@
+{
+  "files": [
+    {
+      "file": "data/raw/packages/复赛-参赛者使用.zip",
+      "sha256": "7be67652de8146ad16f86ce4e9788085fb0d220ce2db748b0cb14cf98d1510d4",
+      "size_bytes": 26265242
+    },
+    {
+      "file": "data/raw/packages/复赛-评分所用测试集.zip",
+      "sha256": "95d844cefb0d961e1072270d32e424fe6800bbace8b9eac1b054e0cf94592305",
+      "size_bytes": 1763003
+    },
+    {
+      "file": "data/raw/test/Semi_test_gas.csv",
+      "sha256": "60d1d23b43ebf71c9a6161f8030699ce831908c1dcd29c64d8d19f1fa7121ef2",
+      "size_bytes": 2336711
+    },
+    {
+      "file": "data/raw/test/Semi_test_gas_holder.csv",
+      "sha256": "bb06cd2e509645c4e1e22b04df17d8e187a6349c73dcaf4f93c0c91018a8f989",
+      "size_bytes": 583029
+    },
+    {
+      "file": "data/raw/test/Semi_test_gas_user.csv",
+      "sha256": "18a5783cf62f385e44988c59536a5a18a3f4a6437cf544416179b71fd553c48c",
+      "size_bytes": 1056861
+    },
+    {
+      "file": "data/raw/test/Semi_test_load.csv",
+      "sha256": "ca06847286fcbafe7c06f8617638895404ee266810735c8850c615af850b7bf7",
+      "size_bytes": 738690
+    },
+    {
+      "file": "data/raw/train/Semi_gas.csv",
+      "sha256": "b54d7b4e9f4ec41d2b74822b7fabd87e8f7bb0fedfe09f7a8b5374379b20b58c",
+      "size_bytes": 32807406
+    },
+    {
+      "file": "data/raw/train/Semi_gas_holder.csv",
+      "sha256": "241261644742a63f3587b0fd02441989e71ef43edcfdafaabcd35a1ac68569fa",
+      "size_bytes": 6964577
+    },
+    {
+      "file": "data/raw/train/Semi_gas_user.csv",
+      "sha256": "6810a0edf71d16a3b01121167d16adedcee0afd81147f44d8384c82161b2288d",
+      "size_bytes": 15703915
+    },
+    {
+      "file": "data/raw/train/Semi_load.csv",
+      "sha256": "0d8c14e3abffe91137c18abde00ec19a62a42e80683f7ebda15da8bd955dc309",
+      "size_bytes": 14932255
+    }
+  ],
+  "manifest_version": "round2_v3_raw_1",
+  "raw_data_read_only": true
+}

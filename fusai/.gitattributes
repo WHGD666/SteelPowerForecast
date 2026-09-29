@@ -1,0 +1,13 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.txt text eol=lf
+*.pdf binary
+*.png binary
+
+# This frozen assignment is content-addressed byte-for-byte with CRLF endings.
+manifests/round2_v3/validation_origins_v3.csv binary

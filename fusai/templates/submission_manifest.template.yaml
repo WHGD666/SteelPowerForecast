@@ -1,0 +1,52 @@
+submission_id: REQUIRED
+source_run_id: REQUIRED
+control_submission_id: null
+protocol_version: round2_v3
+hypothesis: REQUIRED
+primary_change: REQUIRED
+
+created_at: null
+submitted_at: null
+daily_slot: null
+
+git:
+  branch: null
+  commit: null
+  dirty: null
+
+files:
+  s_result:
+    path: s_result.csv
+    sha256: null
+    rows: null
+    columns: 17
+  l_result:
+    path: l_result.csv
+    sha256: null
+    rows: null
+    columns: 193
+  archive:
+    path: teamname_gas_predict_final.zip
+    sha256: null
+
+checks:
+  schema: false
+  datetime_complete: false
+  no_missing: false
+  finite_values: false
+  physical_bounds: false
+  target_consistency: false
+  archive_integrity: false
+
+platform_result:
+  official_score: null
+  short_accuracy: null
+  short_g1_accuracy: null
+  short_gall_accuracy: null
+  short_file_score: null
+  long_accuracy: null
+  long_g1_accuracy: null
+  long_gall_accuracy: null
+  long_file_score: null
+  anomaly_status: null
+  is_official_best: false

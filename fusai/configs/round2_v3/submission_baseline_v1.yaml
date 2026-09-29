@@ -1,0 +1,30 @@
+submission_version: round2_v3_submission_baseline_1
+status: frozen_for_calibration_submission
+experiment_role: competition
+source_development_run_id: 20260929T124936Z_r2v3_baseline_46e02afe85
+source_baseline_config: configs/round2_v3/baseline_v1.yaml
+test_feature_manifest: manifests/round2_v3/test_features_with_history_v1.json
+hypothesis: "the leakage-safe v3 baseline provides a trustworthy external calibration point on the October hidden target"
+primary_change: "first v3 platform calibration submission"
+team_name: "这模型调的有力量"
+archive_filename: "这模型调的有力量_gas_predict_final.zip"
+
+full_training:
+  period_specific_label_cutoff: true
+  short_latest_origin_rule: "raw_train_end-(120-1)min, floored to 15min"
+  long_latest_origin_rule: "raw_train_end-(1440-1)min, floored to 15min"
+  reuse_feature_selection: true
+  reuse_lightgbm_parameters: true
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  generator_all_min: 0.001
+  generator_all_max: 440.0
+  enforce_generator_1_lte_generator_all: true
+
+output:
+  root: submissions/round2_v3
+  encoding: utf-8
+  float_format: "%.6f"
+  append_registry: true

@@ -1,0 +1,23 @@
+{
+  "artifact_version": "round2_v3_test_features_with_history_1",
+  "columns": 623,
+  "feature_config": "configs/round2_v3/features_v1.yaml",
+  "feature_config_sha256": "b6712d98d1bc6fa24878fd9ed30e2a0f82b05b986b3bf5f5ed51d0b7c8249757",
+  "feature_count": 622,
+  "history_contiguous_across_boundary": true,
+  "history_start": "2025-05-03T00:00:00",
+  "maximum_source_time_offset_minutes": 0,
+  "output": "data/prepared/round2_v3_test_features_with_history_1/test_origin_features_with_history.csv",
+  "output_sha256": "ac48568de3e17695d8dc13760bb9326f3ee74071991b6756c0fcf5fdc17c9f7f",
+  "registry": "data/prepared/round2_v3_test_features_with_history_1/feature_registry.csv",
+  "registry_sha256": "3fb4925b53640f5ce2e8acc9bb0df0ab735725fad717b2b32dc2bf5f56a2578b",
+  "rows": 960,
+  "test_causal_base": "data/prepared/round2_v3_causal_base_1/test_causal_base_1min.csv",
+  "test_causal_base_sha256": "ef6f29c2a42c359422387e9d30764e16f6f4a21f1ddd7dc8d38211b5fef40196",
+  "test_encoding": "utf-8-sig",
+  "test_end": "2025-10-10T23:59:00",
+  "test_start": "2025-10-01T00:00:00",
+  "train_causal_base": "data/prepared/round2_v3_causal_base_1/train_causal_base_1min.csv",
+  "train_causal_base_sha256": "6f71092d5eadf9265289c087c3a65a33f5cffca19c1d8f9b40e1aaee2176c7b1",
+  "train_encoding": "utf-8-sig"
+}

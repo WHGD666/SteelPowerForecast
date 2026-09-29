@@ -1,0 +1,72 @@
+feature_contract_version: round2_v3_features_1
+status: frozen_for_v3_baseline
+prediction_origin_inclusive: true
+maximum_source_time_rule: "every feature value for origin t must depend only on observations with timestamp <= t"
+
+raw_covariates_allowed_at_or_before_origin:
+  gas:
+    - blast_furnace_1
+    - blast_furnace_2
+    - blast_furnace_3
+    - blast_furnace_4
+    - blast_furnace_5
+    - coke_oven_1
+    - converter_1
+    - air_heater_1
+    - air_heater_2
+    - air_heater_3
+    - air_heater_4
+    - air_heater_5
+    - into_gas_mixed_coke
+    - into_gas_mixed_blast_furnace
+    - into_gas_mixed_converter
+  gas_user:
+    - blast_furnace_user1
+    - blast_furnace_user2
+    - blast_furnace_user3
+    - blast_furnace_user4
+    - converter_user1
+    - converter_user2
+  gas_holder:
+    - blast_furnace_gas_holder_1
+    - blast_furnace_gas_holder_2
+  load_process:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+
+target_columns:
+  - generator_1
+  - generator_all
+
+target_history_policy:
+  training: "historical target lags may be evaluated only in a separate deployment-realism ablation"
+  formal_test: "official test targets are fully absent, so the default v3 baseline must not require observed target lags"
+  predicted_feedback: "earlier-origin predictions may be used only when replayed identically in validation and test"
+
+excluded_columns:
+  - column: converter_user3
+    reason: all_empty_in_train_and_test
+
+partial_activation_columns:
+  - column: air_heater_3
+    first_valid_train: "2025-05-14 10:27:00"
+  - column: blast_furnace_3
+    first_valid_train: "2025-09-02 14:23:00"
+  - column: blast_furnace_gas_holder_1
+    first_valid_train: "2025-09-24 18:25:00"
+
+forbidden_for_submission_models:
+  - future_process_observations
+  - future_generator_use
+  - future_gas_production
+  - future_gas_user_consumption
+  - future_gas_holder_state
+  - true_future_targets
+  - test_target_reconstruction
+  - external_data
+  - externally_pretrained_weights
+
+diagnostic_only:
+  - true_future_covariate_paths
+  - true_target_history_rollout

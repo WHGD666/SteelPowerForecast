@@ -1,0 +1,30 @@
+# Official/raw and generated data stay local. Keep only the governance notes.
+data/raw/**
+!data/raw/README.md
+data/prepared/**
+!data/prepared/README.md
+
+# Formal runs and submission payloads are immutable local artifacts and may be large.
+outputs/**
+!outputs/README.md
+submissions/round2_v3/**
+!submissions/round2_v3/README.md
+!submissions/round2_v3/SUBMISSION_LOG.md
+!submissions/round2_v3/registry.csv
+
+# Model and cache artifacts.
+*.pkl
+*.joblib
+*.npz
+*.npy
+*.bin
+*.model
+*.ckpt
+*.pt
+*.pth
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Preserve extracted legacy source and evidence, not duplicate binary archives.
+legacy/**/*.zip

@@ -1,0 +1,152 @@
+{
+  "artifact_version": "round2_v3_causal_base_1",
+  "backfill_used": false,
+  "cleaning_config_sha256": "7055afddac184d6d1442125afef5ad2ffe6d3c242ccea1fe20f2f4338fb1648c",
+  "feature_contract_sha256": "9f5d0e59ec0d793ace4339c06050b002d72c1fb1f69dfccd390a4197014476aa",
+  "forward_fill_used": false,
+  "interpolation_used": false,
+  "maximum_source_time_offset_minutes": 0,
+  "outlier_replacement_used": false,
+  "partitions": [
+    {
+      "columns": 60,
+      "datetime_max": "2025-09-30T23:59:00",
+      "datetime_min": "2025-05-03T00:00:00",
+      "inserted_timestamp_counts": {
+        "timestamp_inserted__gas": 2,
+        "timestamp_inserted__gas_holder": 3,
+        "timestamp_inserted__gas_user": 2,
+        "timestamp_inserted__load_process": 3
+      },
+      "output": "data/prepared/round2_v3_causal_base_1/train_causal_base_1min.csv",
+      "output_sha256": "6f71092d5eadf9265289c087c3a65a33f5cffca19c1d8f9b40e1aaee2176c7b1",
+      "partition": "train",
+      "raw_missing_counts_after_alignment": {
+        "air_heater_1": 3,
+        "air_heater_2": 3,
+        "air_heater_3": 16484,
+        "air_heater_4": 2,
+        "air_heater_5": 3,
+        "blast_furnace_1": 3,
+        "blast_furnace_2": 3,
+        "blast_furnace_3": 176544,
+        "blast_furnace_4": 4,
+        "blast_furnace_5": 2,
+        "blast_furnace_gas_holder_1": 208465,
+        "blast_furnace_gas_holder_2": 3,
+        "blast_furnace_user1": 3,
+        "blast_furnace_user2": 3,
+        "blast_furnace_user3": 3,
+        "blast_furnace_user4": 3,
+        "coke_oven_1": 3,
+        "converter_1": 3,
+        "converter_user1": 2,
+        "converter_user2": 3,
+        "generator_use_blast_furnace_gas": 3,
+        "generator_use_coke_gas": 3,
+        "generator_use_converter_gas": 3,
+        "into_gas_mixed_blast_furnace": 3,
+        "into_gas_mixed_coke": 3,
+        "into_gas_mixed_converter": 3
+      },
+      "rows": 217440,
+      "source_files": [
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas",
+          "path": "data/raw/train/Semi_gas.csv",
+          "sha256": "b54d7b4e9f4ec41d2b74822b7fabd87e8f7bb0fedfe09f7a8b5374379b20b58c"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas_user",
+          "path": "data/raw/train/Semi_gas_user.csv",
+          "sha256": "6810a0edf71d16a3b01121167d16adedcee0afd81147f44d8384c82161b2288d"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas_holder",
+          "path": "data/raw/train/Semi_gas_holder.csv",
+          "sha256": "241261644742a63f3587b0fd02441989e71ef43edcfdafaabcd35a1ac68569fa"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "load_process",
+          "path": "data/raw/train/Semi_load.csv",
+          "sha256": "0d8c14e3abffe91137c18abde00ec19a62a42e80683f7ebda15da8bd955dc309"
+        }
+      ]
+    },
+    {
+      "columns": 60,
+      "datetime_max": "2025-10-10T23:59:00",
+      "datetime_min": "2025-10-01T00:00:00",
+      "inserted_timestamp_counts": {
+        "timestamp_inserted__gas": 0,
+        "timestamp_inserted__gas_holder": 0,
+        "timestamp_inserted__gas_user": 0,
+        "timestamp_inserted__load_process": 0
+      },
+      "output": "data/prepared/round2_v3_causal_base_1/test_causal_base_1min.csv",
+      "output_sha256": "ef6f29c2a42c359422387e9d30764e16f6f4a21f1ddd7dc8d38211b5fef40196",
+      "partition": "test",
+      "raw_missing_counts_after_alignment": {
+        "air_heater_1": 0,
+        "air_heater_2": 0,
+        "air_heater_3": 0,
+        "air_heater_4": 0,
+        "air_heater_5": 0,
+        "blast_furnace_1": 0,
+        "blast_furnace_2": 0,
+        "blast_furnace_3": 1,
+        "blast_furnace_4": 1,
+        "blast_furnace_5": 0,
+        "blast_furnace_gas_holder_1": 0,
+        "blast_furnace_gas_holder_2": 0,
+        "blast_furnace_user1": 0,
+        "blast_furnace_user2": 1,
+        "blast_furnace_user3": 0,
+        "blast_furnace_user4": 0,
+        "coke_oven_1": 0,
+        "converter_1": 0,
+        "converter_user1": 0,
+        "converter_user2": 0,
+        "generator_use_blast_furnace_gas": 8,
+        "generator_use_coke_gas": 6,
+        "generator_use_converter_gas": 4,
+        "into_gas_mixed_blast_furnace": 0,
+        "into_gas_mixed_coke": 0,
+        "into_gas_mixed_converter": 0
+      },
+      "rows": 14400,
+      "source_files": [
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas",
+          "path": "data/raw/test/Semi_test_gas.csv",
+          "sha256": "60d1d23b43ebf71c9a6161f8030699ce831908c1dcd29c64d8d19f1fa7121ef2"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas_user",
+          "path": "data/raw/test/Semi_test_gas_user.csv",
+          "sha256": "18a5783cf62f385e44988c59536a5a18a3f4a6437cf544416179b71fd553c48c"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "gas_holder",
+          "path": "data/raw/test/Semi_test_gas_holder.csv",
+          "sha256": "bb06cd2e509645c4e1e22b04df17d8e187a6349c73dcaf4f93c0c91018a8f989"
+        },
+        {
+          "encoding": "utf-8-sig",
+          "family": "load_process",
+          "path": "data/raw/test/Semi_test_load.csv",
+          "sha256": "ca06847286fcbafe7c06f8617638895404ee266810735c8850c615af850b7bf7"
+        }
+      ]
+    }
+  ],
+  "raw_values_preserved": true,
+  "target_columns_included": false
+}

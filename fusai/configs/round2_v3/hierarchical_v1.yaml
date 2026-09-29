@@ -1,0 +1,37 @@
+experiment_version: round2_v3_hierarchical_1
+status: frozen_for_first_run
+experiment_role: competition
+control_run_id: 20260929T124936Z_r2v3_baseline_46e02afe85
+control_config: configs/round2_v3/baseline_v1.yaml
+hypothesis: "large-unit load is more stable than direct small-unit load, so hierarchical reconstruction may improve generator_1"
+primary_change: "replace direct generator_1 target with large_units=generator_all-generator_1 and reconstruct generator_1"
+holdout_evaluated: false
+submission_eligible: false
+
+reuse_from_control:
+  - labels
+  - origin_features
+  - feature_selection
+  - walk_forward_splits
+  - lightgbm_parameters
+  - generator_all_oof_predictions
+
+derived_target:
+  name: generator_large_units
+  formula: generator_all-generator_1
+  require_nonnegative_actual: true
+
+candidate_variants:
+  - hierarchical_raw
+  - hierarchical_constrained
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  large_units_min: 0.0
+  require_generator_1_lte_generator_all: true
+
+output:
+  root: outputs/round2_v3/hierarchical_runs
+  save_models: true
+  append_registry: true

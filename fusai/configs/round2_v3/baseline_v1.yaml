@@ -1,0 +1,94 @@
+baseline_version: round2_v3_baseline_1
+status: frozen_for_first_run
+experiment_role: competition
+submission_eligible: false
+holdout_evaluated: false
+hypothesis: "correct interval labels plus causal process history should establish a trustworthy v3 control"
+primary_change: "first reproducible v3 baseline under frozen label, feature, split and metric contracts"
+
+inputs:
+  feature_manifest: manifests/round2_v3/origin_features_v1.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  feature_registry: manifests/round2_v3/feature_registry_v1.csv
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+
+fold_roles:
+  - model_selection
+
+periods:
+  short:
+    horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+    training_origin_stride_minutes: 15
+  long:
+    horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+    training_origin_stride_minutes: 60
+
+targets:
+  - generator_1
+  - generator_all
+
+feature_selection:
+  base_signals:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+    - generator_use_total_observed
+    - generator_use_observed_count
+    - blast_furnace_gas_holder_1
+    - blast_furnace_gas_holder_2
+    - gas_holder_sum_observed
+    - blast_furnace_production_sum_observed
+    - blast_furnace_production_observed_count
+    - blast_furnace_user_sum_observed
+    - blast_furnace_user_observed_count
+    - coke_oven_1
+    - converter_1
+    - into_gas_mixed_coke
+    - into_gas_mixed_blast_furnace
+    - into_gas_mixed_converter
+  transforms:
+    - current
+    - lag_15m
+    - lag_60m
+    - lag_180m
+    - lag_720m
+    - lag_1440m
+    - rolling_15m_mean
+    - rolling_60m_mean
+    - rolling_180m_mean
+    - rolling_720m_mean
+    - rolling_1440m_mean
+    - rolling_60m_std
+    - rolling_720m_std
+  include_origin_calendar: true
+  include_all_current_state_indicators: true
+
+models:
+  - calendar_profile
+  - lightgbm_shared_horizon
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 350
+  learning_rate: 0.04
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.9
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  max_bin: 127
+  random_state: 20260929
+  n_jobs: -1
+  verbosity: -1
+  sample_weight: inverse_absolute_target
+  sample_weight_floor: 1.0
+
+output:
+  root: outputs/round2_v3/baseline_runs
+  save_models: true
+  save_oof_predictions: true
+  append_registry: true

@@ -1,0 +1,41 @@
+# IronFlow 复赛长周期切分 v2（新建）
+# 冻结纪律：本文件为复赛新增，configs/splits_v1.yaml 冻结不动、逐字节保留。
+# 待确认（Q2/Q5/Q7）：复赛原始数据为 1 分钟粒度（已核实事实），本切分按 15 分钟预测口径
+#   设计（96 步 = 24 小时）。原始数据到预测口径的重采样方式与官方步长定义待确认。
+# 待确认（Q8）：复赛开发折/封存集时间窗为研究员侧拟定值，待确认。
+split_version: v2
+status: semi-pending-official-confirmation
+frequency_minutes: 15
+maximum_horizon_steps: 96
+targets:
+  - generator_1
+  - generator_all
+development_folds:
+  - fold_id: dev_01
+    train_end: '2025-06-30 23:45:00'
+    validation_origin_start: '2025-07-01 00:00:00'
+    validation_origin_end: '2025-07-02 23:45:00'
+  - fold_id: dev_02
+    train_end: '2025-07-31 23:45:00'
+    validation_origin_start: '2025-08-01 00:00:00'
+    validation_origin_end: '2025-08-02 23:45:00'
+  - fold_id: dev_03
+    train_end: '2025-08-31 23:45:00'
+    validation_origin_start: '2025-09-01 00:00:00'
+    validation_origin_end: '2025-09-02 23:45:00'
+sealed_holdout:
+  fold_id: holdout_01
+  train_end: '2025-09-27 23:45:00'
+  validation_origin_start: '2025-09-28 00:00:00'
+  validation_origin_end: '2025-09-29 23:45:00'
+  sealed: true
+policy:
+  random_split: false
+  expanding_training_window: true
+  validation_origin_step_minutes: 15
+  labels_after_train_end_for_model_fit: forbidden
+  observations_after_each_origin_for_features: forbidden
+  sealed_holdout_metrics_before_candidate_freeze: forbidden
+output:
+  assignment_file: manifests/splits_v2.csv
+  fingerprint_file: manifests/splits_v2.sha256

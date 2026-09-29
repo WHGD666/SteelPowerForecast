@@ -1,0 +1,59 @@
+run_id: REQUIRED
+status: planned
+experiment_role: diagnostic
+task: REQUIRED
+protocol_version: round2_v3
+label_version: REQUIRED
+control_run_id: null
+hypothesis: REQUIRED
+primary_change: REQUIRED
+submission_eligible: false
+holdout_evaluated: false
+
+timing:
+  started_at: null
+  ended_at: null
+  duration_seconds: null
+
+command:
+  working_directory: null
+  argv: null
+
+git:
+  branch: null
+  commit: null
+  dirty: null
+
+environment:
+  python: null
+  platform: null
+  hardware: null
+  dependencies: {}
+
+fingerprints:
+  raw_data: null
+  prepared_data: null
+  split: null
+  task_config: null
+  feature_config: null
+  model_config: null
+
+feature_contract:
+  allowed: []
+  forbidden: []
+  diagnostic_only: []
+
+model:
+  name: null
+  parameters: {}
+  random_seeds: []
+
+metrics:
+  folds: {}
+  oof: {}
+
+artifacts: {}
+
+failure:
+  type: null
+  message: null

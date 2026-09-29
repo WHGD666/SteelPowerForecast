@@ -1,0 +1,73 @@
+{
+  "assignment_sha256": "0d567fd1ba9e422465316ac2d1daa5cb5424eafc094fa4076ae645a4ad5c578f",
+  "config_sha256": "ca6fc468aceebfcf6c4bae0b41b4f8cb196ff8d58c2a2bf97040529f784325d9",
+  "fold_count": 6,
+  "folds": [
+    {
+      "fold_id": "wf_01_july_regular",
+      "latest_eligible_train_origin": "2025-06-30T00:00:00",
+      "maximum_label_end": "2025-07-04T23:44:00",
+      "origins": 288,
+      "role": "model_selection",
+      "train_end": "2025-06-30T23:59:00",
+      "validation_end": "2025-07-03T23:45:00",
+      "validation_start": "2025-07-01T00:00:00"
+    },
+    {
+      "fold_id": "wf_02_august_regular",
+      "latest_eligible_train_origin": "2025-07-31T00:00:00",
+      "maximum_label_end": "2025-08-04T23:44:00",
+      "origins": 288,
+      "role": "model_selection",
+      "train_end": "2025-07-31T23:59:00",
+      "validation_end": "2025-08-03T23:45:00",
+      "validation_start": "2025-08-01T00:00:00"
+    },
+    {
+      "fold_id": "wf_03_bf3_active",
+      "latest_eligible_train_origin": "2025-09-02T00:00:00",
+      "maximum_label_end": "2025-09-06T23:44:00",
+      "origins": 288,
+      "role": "model_selection",
+      "train_end": "2025-09-02T23:59:00",
+      "validation_end": "2025-09-05T23:45:00",
+      "validation_start": "2025-09-03T00:00:00"
+    },
+    {
+      "fold_id": "wf_04_late_september",
+      "latest_eligible_train_origin": "2025-09-18T00:00:00",
+      "maximum_label_end": "2025-09-21T23:44:00",
+      "origins": 192,
+      "role": "model_selection",
+      "train_end": "2025-09-18T23:59:00",
+      "validation_end": "2025-09-20T23:45:00",
+      "validation_start": "2025-09-19T00:00:00"
+    },
+    {
+      "fold_id": "wf_05_holder1_active",
+      "latest_eligible_train_origin": "2025-09-24T00:00:00",
+      "maximum_label_end": "2025-09-28T23:44:00",
+      "origins": 288,
+      "role": "model_selection",
+      "train_end": "2025-09-24T23:59:00",
+      "validation_end": "2025-09-27T23:45:00",
+      "validation_start": "2025-09-25T00:00:00"
+    },
+    {
+      "fold_id": "wf_06_consumed_dev",
+      "latest_eligible_train_origin": "2025-09-27T00:00:00",
+      "maximum_label_end": "2025-09-30T23:44:00",
+      "origins": 192,
+      "role": "consumed_development_only",
+      "train_end": "2025-09-27T23:59:00",
+      "validation_end": "2025-09-29T23:45:00",
+      "validation_start": "2025-09-28T00:00:00"
+    }
+  ],
+  "globally_disjoint_validation_origins": true,
+  "random_split": false,
+  "split_version": "round2_v3_splits_1",
+  "status": "frozen_for_v3_baseline",
+  "strategy": "expanding_window_walk_forward",
+  "validation_origin_rows": 1536
+}

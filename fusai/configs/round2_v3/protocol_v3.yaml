@@ -1,0 +1,80 @@
+protocol_version: round2_v3
+status: frozen_for_v3_baseline
+project: IronFlow
+competition_stage: round2
+
+time:
+  raw_frequency_minutes: 1
+  origin_frequency_minutes: 15
+  origin_policy: rolling_every_15_minutes
+  timestamp_format: "%Y-%m-%d %H:%M:%S"
+
+targets:
+  order:
+    - generator_1
+    - generator_all
+  short_horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+  long_horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  interval_semantics:
+    closed: left
+    label: origin_plus_horizon_minus_15_minutes
+    formula: "mean(raw_target[t+15*(h-1) : t+15*h-1min])"
+    require_all_15_minutes: true
+
+information_set:
+  allowed:
+    - official_process_observations_at_or_before_origin
+    - historical_features_ending_at_or_before_origin
+    - datetime_derived_calendar_and_holiday_features
+    - earlier_origin_model_predictions
+    - official_price_information
+  forbidden:
+    - any_observation_after_origin
+    - future_generator_use
+    - future_gas_production_or_user_consumption
+    - future_gas_holder_state
+    - test_targets_or_reconstructed_test_targets
+    - external_data
+    - externally_pretrained_weights
+    - online_inference_services
+  diagnostic_only:
+    - true_future_covariate_paths
+    - true_future_target_history_rollout
+
+validation:
+  strategy: expanding_window_walk_forward
+  random_split: false
+  test_targets_simulated_missing: true
+  fold_local_preprocessing: true
+  old_sep28_sep29_holdout_status: consumed_development_only
+  internal_sealed_holdout_available: false
+
+metrics:
+  primary: mape
+  accuracy: 1-mape
+  report_by:
+    - period_short_long
+    - target
+    - horizon
+    - fold
+    - operating_regime
+  official_score_mapping_known: false
+
+submission:
+  expected_origin_rows: 960
+  encoding: utf-8
+  short_file: s_result.csv
+  short_columns: 17
+  long_file: l_result.csv
+  long_columns: 193
+  archive_pattern: teamname_gas_predict_final.zip
+  input_csv_required: false
+  minimum_decimal_places_recommended: 3
+
+physical_checks:
+  generator_1_min_exclusive: 0
+  generator_1_max: 200
+  generator_all_min_exclusive: 0
+  generator_all_max: 440
+  require_generator_1_lte_generator_all: true
+  official_ramp_rate_percent_capacity_per_minute: 1

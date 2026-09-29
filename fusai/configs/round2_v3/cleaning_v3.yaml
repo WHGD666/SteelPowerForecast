@@ -1,0 +1,59 @@
+cleaning_version: round2_v3_cleaning_1
+status: frozen_for_v3_baseline
+raw_data_read_only: true
+
+time_axis:
+  frequency: 1min
+  insert_missing_timestamps: true
+  create_inserted_timestamp_flag: true
+  aggregate_to_origin_grid_after_historical_features: true
+
+targets:
+  columns:
+    - generator_1
+    - generator_all
+  fill_raw_target_values: false
+  interval_mean_require_complete_15_minutes: true
+
+covariate_missing:
+  policy: causal_only
+  backfill_allowed: false
+  create_missing_flags: true
+  maximum_forward_fill_minutes: 0
+  note: baseline preserves missing values; bounded causal forward fill is a later ablation, never a silent default
+
+all_empty_columns:
+  exclude:
+    - converter_user3
+  retain_in_audit: true
+
+partial_activation_columns:
+  retain:
+    - blast_furnace_3
+    - air_heater_3
+    - blast_furnace_gas_holder_1
+  create_active_state_flag: true
+  do_not_backfill_before_activation: true
+
+outliers:
+  fit_inside_each_training_fold: true
+  preserve_raw_copy: true
+  create_outlier_flags: true
+  automatic_row_deletion: false
+  known_candidates:
+    air_heater_4:
+      - "2025-06-25 14:24:00"
+    converter_user1:
+      - "2025-08-14 13:29:00"
+    blast_furnace_gas_holder_1:
+      - "2025-09-24 19:06:00"
+      - "2025-09-24 19:07:00"
+
+duplicates:
+  duplicate_timestamp: error
+  duplicate_full_row: error
+
+output:
+  versioned_directory_required: true
+  overwrite_existing_directory: false
+  manifest_required: true
