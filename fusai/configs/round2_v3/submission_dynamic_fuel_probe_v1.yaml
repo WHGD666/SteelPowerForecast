@@ -1,0 +1,57 @@
+submission_version: round2_v3_submission_dynamic_fuel_probe_1
+status: user_authorized_high_risk_probe
+experiment_role: competition_probe
+source_development_run_id: 20261004T070858Z_dynamic_fuel_g1_31e2a08193
+source_dynamic_config: configs/round2_v3/experiments/dynamic_fuel_g1_v1.yaml
+control_submission_id: external_v29b_63_4621
+user_override_failed_promotion_gate: true
+hypothesis: >-
+  The large OOF gain from horizon-specific dynamic fuel transfers to October
+  when used only for long generator_1, while v29b short and generator_all stay frozen.
+primary_change: >-
+  replace only v29b long generator_1 with the exactly tested formula:
+  70 percent full-history-refit dynamic-fuel OLS plus 30 percent frozen v3
+  baseline long generator_1 test prediction.
+known_risks:
+  - promotion gate failed because ordinary origins and two folds degraded
+  - October fuel-feature center is closest to the degraded BF3-active fold
+  - 21-day full-fit window is concentrated in September and may resemble a previously flagged narrow-window lineage
+  - development control OOF is v3 baseline rather than v29b OOF
+
+sources:
+  v29b_bundle:
+    path: legacy/junior_handover_20261001_optimal_bundle/original/给学长_最优版整合(1).zip
+    sha256: 350ca90b8db4f033cb6c8772d04ff374a11e7fba8c05a92971172aa748965cce
+    member_prefix: "02_"
+    s_result_sha256: 63c1ed03a9549ec8aeb83012f21edab221dcc74ed6a459e927e2d319fa92be76
+    l_result_sha256: 088282fc08e9b9ac568983f846fa65ef26c748de18576eae1cd50107d0984da1
+  baseline_submission_manifest: submissions/round2_v3/20260929T212923_calibration_baseline_v1_91cd219d33/submission_manifest.json
+  baseline_l_result_sha256: 722c1346551dbd55881b50106cb3c5d65c186e38c4f54da1f4c0a53b0a9229cd
+  feature_manifest: manifests/round2_v3/origin_features_v1.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+
+blend:
+  dynamic_fuel_weight: 0.70
+  baseline_control_weight: 0.30
+  round_decimals: 6
+
+frozen_blocks:
+  short_generator_1: v29b_exact
+  short_generator_all: v29b_exact
+  long_generator_all: v29b_exact
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  generator_all_min: 0.001
+  generator_all_max: 440.0
+  enforce_generator_1_lte_generator_all: true
+
+output:
+  root: submissions/round2_v3
+  archive_filename: 这模型调的有力量_gas_predict_semi.zip
+  encoding: utf-8
+  float_format: "%.6f"
+  zip_timestamp: [2026, 10, 4, 0, 0, 0]
+  append_registry: true
+

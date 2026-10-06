@@ -1,0 +1,94 @@
+experiment_version: round2_v3_short_g1_expert_gate_1
+status: preregistered
+experiment_role: scientific
+task: expanding_short_generator_1_expert_gate
+control_artifact_id: external_v29b_short_g1_v16_lineage
+source_run_id: 20261004T160243Z_short_dynamic_cap_896d8696e5
+hypothesis: >-
+  An expanding-time, low-capacity gate can identify from causal process state
+  and expert disagreement when the capped dynamic short-g1 expert should be
+  trusted over the v16 control.
+primary_change: >-
+  replace the always-on capped dynamic correction with a soft logistic gate
+  trained only on earlier-fold origin-level expert wins.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  source_manifest: outputs/round2_v3/short_dynamic_fuel_cap_runs/20261004T160243Z_short_dynamic_cap_896d8696e5/run_manifest.json
+  source_oof: outputs/round2_v3/short_dynamic_fuel_cap_runs/20261004T160243Z_short_dynamic_cap_896d8696e5/oof_predictions.csv
+  feature_manifest: manifests/round2_v3/origin_features_v1.json
+  feature_registry: data/prepared/round2_v3_origin_features_1/feature_registry.csv
+
+scope:
+  period: short
+  target: generator_1
+  control_variant: v16_control
+  source_candidate_variant: blend_dynamic70_v16control30_clip5mw
+  promotion_candidate: expanding_soft_expert_gate
+  training_folds: [wf_03_bf3_active, wf_04_late_september]
+  validation_folds: [wf_04_late_september, wf_05_holder1_active]
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+  future_fold_training_allowed: false
+  future_process_observations_allowed: false
+  true_target_history_at_inference_allowed: false
+
+gate_features:
+  disagreement:
+    - disagreement_mean
+    - disagreement_abs_mean
+    - disagreement_std
+    - disagreement_min
+    - disagreement_max
+    - control_mean
+    - control_std
+    - control_horizon_slope
+  causal_process:
+    - generator_use_blast_furnace_gas
+    - generator_use_blast_furnace_gas__lag_60m
+    - generator_use_blast_furnace_gas__roll_1440m_mean
+    - generator_use_coke_gas
+    - generator_use_coke_gas__lag_60m
+    - generator_use_coke_gas__roll_1440m_mean
+    - generator_use_converter_gas
+    - generator_use_converter_gas__lag_60m
+    - generator_use_converter_gas__roll_1440m_mean
+    - blast_furnace_gas_holder_2
+    - blast_furnace_gas_holder_2__lag_60m
+    - blast_furnace_gas_holder_2__roll_1440m_mean
+
+gate_label:
+  unit: prediction_origin
+  definition: candidate_mean_short_mape_strictly_less_than_control_mean_short_mape
+  horizon_aggregation: equal_weight_mean
+  zero_denominator_floor: 1.0e-9
+
+logistic_regression:
+  C: 0.1
+  penalty: l2
+  solver: lbfgs
+  class_weight: balanced
+  max_iter: 2000
+  random_state: 42
+  soft_probability_gate: true
+  threshold_search: false
+
+selection_gate:
+  minimum_short_g1_accuracy_gain_pct: 0.50
+  minimum_single_fold_gain_pct: 0.00
+  minimum_single_horizon_gain_pct: 0.00
+  maximum_ordinary_origin_accuracy_loss_pct: 0.00
+  minimum_event_improvement_fraction: 0.50
+  minimum_evaluated_event_count: 2
+  minimum_gate_roc_auc: 0.55
+  platform_submission_on_pass: false
+
+budget:
+  sequential_validation_fold_count: 2
+  logistic_fit_count: 2
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/short_expert_gate_runs
+  append_registry: true
+  create_submission: false

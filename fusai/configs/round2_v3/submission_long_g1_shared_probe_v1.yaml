@@ -1,0 +1,54 @@
+submission_version: round2_v3_submission_long_g1_shared_probe_1
+status: preregistered_platform_calibration_candidate
+experiment_role: competition_probe
+source_development_run_id: 20261004T122856Z_long_g1_shared_85d58617c3
+source_experiment_config: configs/round2_v3/experiments/long_g1_shared_horizon_v2_augsep.yaml
+source_run_manifest: outputs/round2_v3/shared_horizon_runs/20261004T122856Z_long_g1_shared_85d58617c3/run_manifest.json
+control_submission_id: external_v29b_63_4621
+hypothesis: >-
+  The August-September shared-horizon v28 tree transfers its stable three-fold
+  long generator_1 gain to October while the v29b short and generator_all blocks remain frozen.
+primary_change: >-
+  replace only v29b long generator_1 with the full-fit shared-horizon v2 tree
+  combined with the exactly frozen v28 September fuel recipe.
+known_risks:
+  - source OOF improved only one of two independent event episodes
+  - local 0.6336 percentage-point long-g1 gain is unlikely by itself to close the full 1.5379 score gap
+  - October regime transfer remains unobserved until the isolated platform probe is scored
+
+sources:
+  v29b_bundle:
+    path: legacy/junior_handover_20261001_optimal_bundle/original/给学长_最优版整合(1).zip
+    sha256: 350ca90b8db4f033cb6c8772d04ff374a11e7fba8c05a92971172aa748965cce
+    member_prefix: "02_"
+    s_result_sha256: 63c1ed03a9549ec8aeb83012f21edab221dcc74ed6a459e927e2d319fa92be76
+    l_result_sha256: 088282fc08e9b9ac568983f846fa65ef26c748de18576eae1cd50107d0984da1
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_test_tables:
+    - data/raw/test/Semi_test_gas.csv
+    - data/raw/test/Semi_test_gas_holder.csv
+    - data/raw/test/Semi_test_gas_user.csv
+    - data/raw/test/Semi_test_load.csv
+
+frozen_blocks:
+  short_generator_1: v29b_exact_bytes
+  short_generator_all: v29b_exact_bytes
+  long_generator_all: v29b_exact_values
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  enforce_generator_1_lte_generator_all: true
+
+output:
+  root: submissions/round2_v3
+  archive_filename: 这模型调的有力量_gas_predict_semi.zip
+  float_format: "%.6f"
+  zip_timestamp: [2026, 10, 4, 0, 0, 0]
+  append_registry: true
+

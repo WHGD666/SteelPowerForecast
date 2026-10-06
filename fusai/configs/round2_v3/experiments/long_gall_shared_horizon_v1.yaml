@@ -1,0 +1,113 @@
+experiment_version: round2_v3_long_gall_shared_horizon_1
+status: preregistered
+experiment_role: scientific
+task: isolated_long_generator_all_shared_horizon_tree
+control_artifact_id: external_v29b_63_4621
+hypothesis: "A shared-horizon old-column tree improves v20 long generator_all without using the restored-column bloodline that triggered cheat_detected."
+primary_change: "replace only v20's 96 independent old-column generator_all trees with one shared-horizon old-column tree"
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  legacy_v2_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi.py
+  legacy_v15_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v15_sepwindow.py
+  legacy_v28_reference: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v28.py
+
+validation:
+  strategy: recent_walk_forward
+  fold_ids: [wf_03_bf3_active, wf_04_late_september, wf_05_holder1_active]
+  primary_label: official_interval_mean
+  auxiliary_label: legacy_point
+  random_split: false
+
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+
+training:
+  tree_start: "2025-05-03 00:00:00"
+  target_definition: legacy_point_at_origin_plus_horizon
+  target_history_features_allowed: false
+  future_process_observations_allowed: false
+  feature_engine: v16_legacy_columns
+  global_tree_features:
+    - horizon_minutes
+    - horizon_step
+    - target_hour_sin
+    - target_hour_cos
+    - target_minute_sin
+    - target_minute_cos
+    - target_dayofweek_sin
+    - target_dayofweek_cos
+    - target_is_weekend
+    - target_month
+    - target_day_of_month
+
+v20_recipe:
+  fuel_fit_start: "2025-09-01 00:00:00"
+  fuel_columns: [generator_use_blast_furnace_gas, generator_use_converter_gas]
+  near_max_step: 32
+  near_tree_weight: 0.5
+  near_fuel_weight: 0.5
+  far_tree_weight: 0.225
+  far_climatology_weight: 0.075
+  far_fuel_weight: 0.7
+  climatology_keys: [dayofweek, hour]
+  gate_fit_start: "2025-05-03 00:00:00"
+  gate_smooth_steps: 16
+  gate_baseline_steps: 672
+  gate_baseline_min_periods: 96
+  gate_trigger_absolute_ratio_delta: 0.20
+  gate_clip_min: 0.80
+  gate_clip_max: 1.20
+
+variants:
+  control: v20_per_horizon_control
+  promotion_candidate: v20_shared_horizon_tree
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+
+selection_gate:
+  minimum_component_long_gall_accuracy_gain_pct: 0.30
+  minimum_combination_long_gall_accuracy_gain_pct: 0.40
+  minimum_single_fold_gain_pct: 0.0
+  maximum_ordinary_origin_accuracy_loss_pct: 0.20
+  maximum_near_far_accuracy_loss_pct: 0.15
+  require_majority_episode_improvement: true
+
+budget:
+  fold_count: 3
+  horizons: 96
+  per_horizon_control_models: 288
+  shared_models: 3
+  expected_model_count: 291
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/long_gall_shared_runs
+  append_registry: true
+  create_submission: false

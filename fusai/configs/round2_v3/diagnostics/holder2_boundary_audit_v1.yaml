@@ -1,0 +1,81 @@
+diagnostic_version: round2_v3_holder2_boundary_audit_1
+status: preregistered
+experiment_role: diagnostic
+task: holder2_boundary_residual_audit
+control_artifact_id: external_v29b_63_4621
+control_scientific_run_id: 20261005T080116Z_analog_trajectory_g1_4e4f828951
+hypothesis: >-
+  A fold-local measure of holder-2 boundary pressure—level near a historical
+  boundary, continued dwell, approach velocity, and gas-balance state—has a
+  stable positive relationship with the future long-generator_1 residual left
+  by the shared-horizon control.
+primary_change: >-
+  diagnostic only: derive preregistered holder-2 boundary features from each
+  origin and measure their relationship with frozen control residuals; train no
+  prediction model and create no submission.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  event_feature_manifest: manifests/round2_v3/event_process_features_v1.json
+  event_feature_registry: data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv
+  control_manifest: outputs/round2_v3/analog_trajectory_runs/20261005T080116Z_analog_trajectory_g1_4e4f828951/run_manifest.json
+  control_oof: outputs/round2_v3/analog_trajectory_runs/20261005T080116Z_analog_trajectory_g1_4e4f828951/oof_predictions.csv
+
+validation:
+  strategy: four_contiguous_ten_day_pseudo_tests
+  control_variant: shared_horizon_tree
+  blocks:
+    - fold_id: pseudo_01_july_10d
+      validation_start: "2025-07-01 00:00:00"
+      validation_end: "2025-07-10 23:45:00"
+    - fold_id: pseudo_02_august_10d
+      validation_start: "2025-08-01 00:00:00"
+      validation_end: "2025-08-10 23:45:00"
+    - fold_id: pseudo_03_bf3_10d
+      validation_start: "2025-09-03 00:00:00"
+      validation_end: "2025-09-12 23:45:00"
+    - fold_id: pseudo_04_late_sep_10d
+      validation_start: "2025-09-19 00:00:00"
+      validation_end: "2025-09-28 23:45:00"
+  near_bucket: h015_120
+  far_bucket: h735_1440
+  true_target_history_allowed: false
+  future_process_observations_allowed: false
+
+boundary_contract:
+  required_columns:
+    - holder_2__level
+    - holder_2__delta_1h
+    - holder_2__delta_4h
+    - holder_2__delta_12h
+    - balance_proxy_total__level
+  reference_quantiles: [0.05, 0.95]
+  zone_quantiles: [0.10, 0.90]
+  maximum_dwell_steps: 96
+  robust_scale_floor: 1.0e-6
+  score_weights:
+    centered_position: 0.45
+    multiscale_velocity: 0.25
+    signed_boundary_dwell: 0.20
+    gas_balance_state: 0.10
+  score_extreme_quantiles: [0.25, 0.75]
+  broad_parameter_search: false
+
+diagnostic_gate:
+  minimum_pooled_far_residual_spearman: 0.08
+  minimum_positive_block_fraction: 0.75
+  minimum_pooled_high_low_residual_spread_pct: 1.0
+  minimum_extreme_group_fraction_per_block: 0.05
+  model_experiment_allowed_on_pass: true
+  platform_submission_on_pass: false
+
+budget:
+  model_count: 0
+  gpu_required: false
+  user_runs_cpu_intensive_command: false
+
+output:
+  root: outputs/round2_v3/holder2_boundary_audit_runs
+  append_registry: true
+  create_submission: false

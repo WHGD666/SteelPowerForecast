@@ -1,0 +1,90 @@
+experiment_version: round2_v3_dynamic_fuel_g1_2_56d
+status: pre_registered_not_run
+experiment_role: scientific
+parent_run_id: 20261004T070858Z_dynamic_fuel_g1_31e2a08193
+control_run_id: 20260929T124936Z_r2v3_baseline_46e02afe85
+external_reference_artifact_id: external_v29b_63_4621
+task: long_generator_1_horizon_specific_dynamic_fuel_56d_stability
+hypothesis: >-
+  Extending the fixed fold-local history from 21 to 56 days preserves the
+  horizon-specific dynamic-fuel gain while reducing ordinary-regime and
+  single-fold instability and avoiding a September-only training window.
+
+inputs:
+  feature_manifest: manifests/round2_v3/origin_features_v1.json
+  feature_registry: data/prepared/round2_v3_origin_features_1/feature_registry.csv
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  control_manifest: outputs/round2_v3/baseline_runs/20260929T124936Z_r2v3_baseline_46e02afe85/run_manifest.json
+  control_oof: outputs/round2_v3/baseline_runs/20260929T124936Z_r2v3_baseline_46e02afe85/predictions/oof_predictions.csv
+
+frozen_scope:
+  period: long
+  target: generator_1
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  short_outputs_changed: false
+  generator_all_changed: false
+  true_target_history_allowed: false
+  future_process_observations_allowed: false
+
+dynamic_fuel_features:
+  origin_frequency_minutes: 15
+  fuel_columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+  include_current: true
+  lag_steps: [1, 4, 8, 16, 96]
+  rolling_mean_steps: [4, 16, 96]
+  target_calendar_columns:
+    - target_hour_sin
+    - target_hour_cos
+    - target_minute_sin
+    - target_minute_cos
+    - target_dayofweek_sin
+    - target_dayofweek_cos
+    - target_is_weekend
+    - target_month
+    - target_day_of_month
+
+training:
+  recent_window_days: 56
+  one_model_per_horizon: true
+  estimator: ordinary_least_squares
+  median_imputation_fit_inside_fold: true
+  standardization_fit_inside_fold: true
+  sample_weight: none
+
+variants:
+  control: 1.0
+  dynamic_fuel_ols: 1.0
+  blend_dynamic70_control30:
+    dynamic_fuel_weight: 0.70
+    control_weight: 0.30
+  promotion_candidate: blend_dynamic70_control30
+  broad_blend_search: false
+
+selection_gate:
+  minimum_long_g1_accuracy_gain_pct: 0.8
+  maximum_ordinary_origin_accuracy_loss_pct: 0.2
+  require_recent_fold_non_degradation: true
+  minimum_recent_single_fold_gain_pct: -0.2
+  require_majority_episode_improvement: true
+  require_near_far_safety_check: true
+  platform_submission_on_pass: false
+  next_action_on_pass: build_single_long_g1_candidate_against_frozen_v29b
+
+budget:
+  fold_count: 5
+  horizon_models_per_fold: 96
+  expected_model_count: 480
+  user_runs_cpu_intensive_command: true
+
+output:
+  root: outputs/round2_v3/dynamic_fuel_runs
+  save_oof_predictions: true
+  save_coefficients: true
+  append_registry: true
+

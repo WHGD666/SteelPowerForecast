@@ -1,20 +1,23 @@
-# IronFlow 复赛 v3 工作区
+# IronFlow 复赛 v3 工作区（收官版）
 
-本目录是 IronFlow 复赛的全新受控实验主线。它与初赛代码、学弟复赛旧代码和历史输出隔离，但仍位于同一个 `SteelPowerForecast` 大仓库中。
+本目录是 IronFlow 复赛的受控实验主线（`SteelPowerForecast` 大仓库内，与初赛代码、
+学弟旧代码和历史输出隔离）。**比赛已结束**：初赛 83.5246 晋级；复赛最终最高分
+**63.4621**（v29b，短期 91.61% / 长期 85.25%，官方三项门槛全部达标）。
 
-当前目标不是马上堆模型，而是先建立一条能够解释、比较、复现和审计的冲分链路。官方历史最高分 **52.4085** 作为外部历史基准保留；在完整复现链补齐以前，它不视为本目录中的可复现基线。
+本工作区的核心产出不是单一模型，而是一条**可解释、可复现、可审计**的实验链：
+32 个本地 run、10 次平台提交、15 条按预登记门禁正式关闭的技术路线、80 条决策记录，
+全部有 `run_id`、配置、数据指纹与 SHA-256 哈希背书。
 
-## 当前状态
+## 收官文档（先读这三份）
 
-- 项目阶段：**Stage 4 — 平台校准后受控改进与历史机制复现**。
-- 当前日期：2026-09-29。
-- 官方门槛：短期准确率不低于 90%，长期准确率不低于 85%，总分不低于 60。
-- 项目目标：形成合规、可复现、稳定超过 60 分并冲击 65+ 的方案。
-- 官方数据、规则、答疑和学弟历史资料已完成隔离快照与哈希核验。
-- 原始数据只读审计、正式标签、验证切分和本地指标合同已完成。
-- v3 baseline、层次目标实验和首次平台校准均已完成。
-- 首次 v3 平台分为 **48.9241**，低于历史 legacy v9 的 **52.4085**；该结果已拒绝为高分候选，只保留为可复现校准锚点。
-- 平台仅返回总分，不能推断短期、长期或分目标表现。
+| 文档 | 内容 |
+|---|---|
+| [docs/70_COMPREHENSIVE_EXPERIMENT_LEDGER.md](docs/70_COMPREHENSIVE_EXPERIMENT_LEDGER.md) | 全量实验总账：每次提交与每个 run 的假设、结果、裁决 |
+| [docs/71_TECHNICAL_SOLUTION_SUMMARY.md](docs/71_TECHNICAL_SOLUTION_SUMMARY.md) | 技术方案总结：问题→数据→特征→验证→模型→门禁→结论 |
+| [docs/72_FINAL_SCORE_RECORD.md](docs/72_FINAL_SCORE_RECORD.md) | 最终成绩记录：全部官方分数与归因 |
+| [docs/73_V29B_BEST_SUBMISSION_DOSSIER.md](docs/73_V29B_BEST_SUBMISSION_DOSSIER.md) | 最佳版本档案：v29b 63.4621 成绩单、配方、血统、证据链与缺口归因 |
+
+全部文档的分类索引见 [docs/README.md](docs/README.md)。
 
 ## 不可违反的原则
 
@@ -42,90 +45,30 @@
 | `src/round2_v3/` | 复赛 v3 正式实现 | 代码审查后修改 |
 | `tests/round2_v3/` | 标签、信息边界、切分和提交合同测试 | 随协议维护 |
 | `manifests/round2_v3/` | 数据指纹、切分清单和协议指纹 | 不覆盖，生成新版本 |
-| `experiments/round2_v3/` | 实验登记簿和人类可读日志 | 只追加 |
-| `outputs/` | 本地运行产物 | 每个 run 独立、不可覆盖 |
-| `submissions/round2_v3/` | 提交登记和冻结包 | 每个 submission 独立 |
+| `experiments/round2_v3/` | 实验登记簿（registry.csv，32 run）和人读日志（55 条） | 只追加 |
+| `outputs/` | 本地运行产物（每个 run 独立、含指纹 manifest、不可覆盖） | 否 |
+| `submissions/round2_v3/` | 提交登记（10 次）与冻结包、哈希级日志 | 每个 submission 独立 |
 | `templates/` | run 和 submission manifest 模板 | 版本化维护 |
+| `docs/` | 00-72 全部治理、协议、审计与报告文档 | 见 docs/README.md 索引 |
 
-## 文档阅读顺序
-
-1. `docs/00_PROJECT_STATUS.md`
-2. `docs/01_OFFICIAL_TASK_CONTRACT.md`
-3. `docs/02_DATA_GOVERNANCE_AND_AUDIT.md`
-4. `docs/03_VALIDATION_PROTOCOL.md`
-5. `docs/04_EXPERIMENT_PROTOCOL.md`
-6. `docs/05_HIGH_SCORE_STRATEGY.md`
-7. `docs/06_RISK_REGISTER.md`
-8. `docs/07_SUBMISSION_PROTOCOL.md`
-9. `docs/08_LEGACY_EVIDENCE.md`
-10. `docs/09_DECISION_LOG.md`
-11. `docs/10_DATA_AUDIT_REPORT.md`
-12. `docs/11_BASELINE_V1_REPORT.md`
-13. `docs/12_PLATFORM_CALIBRATION_POSTMORTEM.md`
-
-## 训练前门禁（已完成）
-
-在开始模型训练前，以下事项必须全部完成：
+## 训练前门禁（历史记录，全部完成）
 
 - [x] 官方资料和数据复制到对应目录并完成 SHA-256 指纹。
 - [x] 原始数据结构、缺失、异常、部分投运字段和分布漂移审计完成。
-- [x] 标签区间映射通过边界样例测试，并生成正式 manifest。
+- [x] 标签区间映射通过边界样例测试，并生成正式 manifest（14,496 区间，2 个不完整）。
 - [x] 允许字段、禁止字段和诊断字段清单冻结。
-- [x] 时间切分清单生成并通过不重叠检查。
+- [x] 时间切分清单生成并通过不重叠检查（6 折 + 4 个十日伪测试块）。
 - [x] 验证模拟能够证明每个起点只使用 `t` 及以前的信息。
 - [x] 评价指标实现通过人工小样例测试。
 - [x] 提交列名、顺序、行数和时间连续性合同冻结。
 
-门禁未通过前，不得把任何模型结果称为 v3 baseline。
+## 收官状态
 
-## 下一步
-
-当前不重复提交 baseline 微调版本，优先恢复可复现的 legacy v9 等价锚点并识别其有效机制：
-
-1. 对齐旧版目标历史反馈、递归路径、煤气平衡、训练窗口和后处理。
-2. 在冻结切分上逐项替换，重点观察 `generator_1`、晚九月和气柜投运折。
-3. 对长周期 15/30/60 分钟 origin 抽样做同协议消融。
-4. 候选通过新门禁后，平台提交只改变短文件或长文件中的一个，保证总分变化可归因。
-
-完整教训、禁止推断和新提交门禁见 `docs/12_PLATFORM_CALIBRATION_POSTMORTEM.md`。
-
-已准备好全量因果对齐命令，但由于会读写数十 MB 数据，按当前协作约定由人工在
-`fusai/` 目录执行：
-
-```powershell
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.prepare_causal_base
-```
-
-该命令不训练模型，不使用 GPU，不修改 raw 文件；它只生成新的版本目录和 manifest，
-且如果目录已存在会拒绝覆盖。
-
-因果 base 与 origin features 均已生成并验收。正式 baseline 命令为：
-
-```powershell
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.preflight_baseline
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.run_baseline --config configs\round2_v3\baseline_v1.yaml
-```
-
-该命令会训练 5 折 × 2 周期 × 2 目标，共 20 个 LightGBM，并同步计算日历弱基线；
-保存 OOF、逐折模型、指标、事件日志和不可覆盖的 run manifest。它是 CPU 密集任务，
-因此由人工执行。
-
-首个 baseline 已完成。当前受控层次目标实验命令：
-
-```powershell
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.preflight_hierarchical
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.run_hierarchical --config configs\round2_v3\hierarchical_v1.yaml
-```
-
-该实验只训练 5 折 × 2 周期共 10 个 `large_units` 模型，`generator_all` 直接复用控制组 OOF；
-不使用平台数据，不生成提交文件。
-
-层次实验已因 OOF 退化而拒绝。首次平台校准包按以下顺序生成（已完成，除复现检查外不应重复提交）：
-
-```powershell
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.build_test_features_with_history
-& D:\anaconda\envs\vocs\python.exe -m src.round2_v3.build_submission_baseline --config configs\round2_v3\submission_baseline_v1.yaml
-```
-
-第一条命令确保 10 月首个起点的 lag/rolling 连续使用 9 月历史；第二条命令全量训练
-4 个模型、生成 960 行短/长文件、执行物理与 schema 检查并打包 ZIP。
+- 代码与测试：v3 链完整保留，收官时 **118 项 pytest 全部通过**；训练具备确定性
+  （固定种子 + deterministic，复跑逐位一致已实证）。
+- 复现边界（如实声明）：v29b 完整上游链的独立重跑未完成；本项目 v3 链的 6 次平台
+  提交全部低于 v29b 控制，最好 63.4539。
+- 核心方法论结论（供报告引用）：本地 OOF 正向增益与十月平台结果呈负相关；根因是
+  十月高气柜制度与三号高炉硬外推（见 docs/69）；折内气柜边界机制信号 8/8 块成立
+  但残差修正方向不稳（见 docs/66/68）。
+- 复现命令与历史协作记录保留在各协议文档内，均标注"不应重复训练或提交"。

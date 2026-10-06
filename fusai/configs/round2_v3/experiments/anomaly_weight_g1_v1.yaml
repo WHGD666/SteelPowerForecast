@@ -1,0 +1,112 @@
+experiment_version: round2_v3_anomaly_weight_g1_1
+status: preregistered
+experiment_role: scientific
+task: isolated_generator_1_anomaly_sample_weight
+control_artifact_id: external_v29b_63_4621
+hypothesis: "Causally upweighting low-fuel training origins improves the v28 generator_1 tree across recent regimes when the deployed fuel formula is held exactly fixed."
+primary_change: "only the generator_1 LightGBM sample weight changes from 1 to 3 when the fold-local causal fuel ratio is below 0.8"
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  legacy_v28_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v28.py
+  legacy_v34_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v34.py
+
+experiment:
+  target: generator_1
+  tree_recipe: v28_exact
+  fuel_recipe: v28_exact_0.8_near_0.6_far
+  frozen_other_blocks:
+    - short_generator_all
+    - long_generator_all
+  future_process_observations_allowed: false
+  true_target_history_features_allowed: false
+  platform_feedback_used_for_fit: false
+
+validation:
+  strategy: recent_walk_forward
+  fold_ids:
+    - wf_03_bf3_active
+    - wf_04_late_september
+    - wf_05_holder1_active
+  primary_label: official_interval_mean
+  auxiliary_label: legacy_point
+  random_split: false
+
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+
+training:
+  g1_tree_start: "2025-09-01 00:00:00"
+  minimum_rows_per_model: 90
+  target_definition: legacy_point_at_origin_plus_horizon
+  feature_definition: exact_v28_restored_columns_without_target_history
+
+anomaly_detector:
+  fit_target: generator_all
+  fuel_columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_converter_gas
+  smooth_steps: 16
+  baseline_steps: 672
+  baseline_min_periods: 96
+  threshold: 0.8
+  strict_less_than: true
+  fold_local_fit: true
+
+variants:
+  multipliers: [1, 2, 3, 5]
+  control_multiplier: 1
+  primary_multiplier: 3
+  sensitivity_only_multipliers: [2, 5]
+  select_best_sensitivity_variant: false
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+
+selection_gate:
+  minimum_component_long_g1_accuracy_gain_pct: 0.15
+  minimum_standalone_long_g1_accuracy_gain_pct: 0.8
+  minimum_single_fold_gain_pct: 0.0
+  maximum_ordinary_origin_accuracy_loss_pct: 0.10
+  maximum_near_far_accuracy_loss_pct: 0.10
+  minimum_auxiliary_legacy_point_gain_pct: 0.0
+  maximum_short_accuracy_loss_pct: 0.10
+  require_majority_episode_improvement: true
+
+budget:
+  fold_count: 3
+  horizon_count: 96
+  variant_count: 4
+  expected_model_count: 1152
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/anomaly_weight_runs
+  save_oof_predictions: true
+  append_registry: true
+  create_submission: false

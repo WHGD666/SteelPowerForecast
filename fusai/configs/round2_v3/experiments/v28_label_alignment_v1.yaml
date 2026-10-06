@@ -1,0 +1,99 @@
+experiment_version: round2_v3_v28_label_alignment_1
+status: preregistered
+experiment_role: scientific
+task: v28_generator_1_interval_label_alignment
+control_artifact_id: external_v29b_63_4621
+control_scientific_run_id: 20261004T092221Z_anomaly_weight_g1_e6563a0b55
+hypothesis: "Training the v28 generator_1 tree and fuel relation on the official 15-minute interval mean instead of the next grid-point instantaneous load materially improves official-mean OOF accuracy."
+primary_change: "replace the generator_1 training label definition from legacy point-at-t+h to the official 15-minute interval mean while keeping features, model parameters and fuel weights fixed"
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  control_manifest: outputs/round2_v3/anomaly_weight_runs/20261004T092221Z_anomaly_weight_g1_e6563a0b55/run_manifest.json
+  control_oof: outputs/round2_v3/anomaly_weight_runs/20261004T092221Z_anomaly_weight_g1_e6563a0b55/oof_predictions.csv
+  legacy_v28_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v28.py
+
+validation:
+  strategy: recent_walk_forward
+  fold_ids:
+    - wf_03_bf3_active
+    - wf_04_late_september
+    - wf_05_holder1_active
+  primary_label: official_interval_mean
+  random_split: false
+
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+
+training:
+  g1_tree_start: "2025-09-01 00:00:00"
+  use_same_training_origins_as_legacy_control: true
+  minimum_rows_per_model: 90
+  target_history_features_allowed: false
+  future_process_observations_allowed: false
+
+variants:
+  control: legacy_point_tree_plus_legacy_point_fuel
+  diagnostics:
+    - interval_tree_plus_legacy_point_fuel
+    - legacy_point_tree_plus_interval_fuel
+  promotion_candidate: interval_tree_plus_interval_fuel
+  select_diagnostic_as_winner: false
+
+fuel_recipe:
+  columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+  fit_start: "2025-09-01 00:00:00"
+  near_horizon_max_minutes: 32
+  near_weight: 0.8
+  far_weight: 0.6
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+
+selection_gate:
+  minimum_component_long_g1_accuracy_gain_pct: 0.5
+  minimum_standalone_long_g1_accuracy_gain_pct: 0.8
+  minimum_single_fold_gain_pct: 0.0
+  maximum_ordinary_origin_accuracy_loss_pct: 0.2
+  maximum_near_far_accuracy_loss_pct: 0.2
+  require_majority_episode_improvement: true
+
+budget:
+  fold_count: 3
+  horizon_count: 96
+  trained_model_variants: 1
+  expected_model_count: 288
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/label_alignment_runs
+  append_registry: true
+  create_submission: false

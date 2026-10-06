@@ -36,3 +36,14 @@ venv/
 *.pkl
 *.ckpt
 .env
+
+# Security scan state (local tooling)
+.mimosa/
+
+# Excluded from public repo: Mimosa security-gate findings (path-construction patterns)
+# in immutable third-party legacy snapshots; files remain locally, originals unchanged.
+fusai/legacy/junior_handover_20261001_v16_candidate/source_snapshot/src/build_submission_semi_v15_sepwindow.py
+fusai/legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v15_sepwindow.py
+fusai/legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v29.py
+fusai/legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v29b.py
+fusai/legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v31.py

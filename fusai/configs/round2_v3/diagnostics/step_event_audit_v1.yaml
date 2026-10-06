@@ -1,0 +1,41 @@
+diagnostic_version: round2_v3_step_event_audit_1
+experiment_role: diagnostic
+control_artifact_id: external_v29b_63_4621
+hypothesis: >-
+  long generator_1 losses concentrate around sustained low-fuel episodes, and
+  causal process signals observed 2 to 24 hours before episode onset may
+  distinguish those episodes from matched ordinary periods.
+
+event_definition:
+  name: legacy_low_fuel_ratio
+  generator_all_fuel_columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_converter_gas
+  short_rolling_points: 16
+  baseline_rolling_points: 672
+  baseline_minimum_points: 96
+  threshold: 0.80
+  expected_train_event_days: 24
+  merge_consecutive_event_days: true
+
+precursor_audit:
+  lead_hours: [2, 4, 6, 12, 24]
+  delta_hours: [1, 2, 4, 6, 12]
+  volatility_hours: [1, 4]
+  level_baseline_hours: 168
+  matched_control_max_distance_days: 28
+  matched_control_fallback_distance_days: 60
+  event_exclusion_hours: 48
+  maximum_controls_per_event: 24
+  minimum_controls_per_event: 8
+
+label_confirmation:
+  past_reference_hours: 4
+  future_hours: [2, 6, 12, 24]
+  drop_threshold_mw: -5.0
+  primary_outcome: sustained_drop_6h
+
+output:
+  root: outputs/round2_v3/diagnostics/step_event_audits
+  float_format: "%.10g"
+  overwrite: false

@@ -1,0 +1,59 @@
+# IronFlow 复赛提交配置（semi 新建）
+# 冻结纪律：本文件为复赛新增，configs/submission_round2_composed.yaml 冻结不动、逐字节保留。
+# 待确认（Q6/Q7）：复赛提交命名与官方输出列结构待官方确认，archive_suffix 为占位值。
+# 待确认：source_development_run_id / per_target_model 需在复赛开发折 run 完成后回填。
+submission_version: semi_composed
+status: semi-pending-official-confirmation
+competition_stage: semi
+team_name: 这模型调的有力量
+selection_policy: per_target_argmin_development_mape
+source_development_run_id: TBD_AFTER_SEMI_RUNS
+per_target_model:
+  generator_1: TBD
+  generator_all: TBD
+composed_development_mape_estimate: null
+composed_development_score_1_mape_estimate: null
+prepared_directory: outputs/prepared_v2
+prepared_input_file: input.csv
+prepared_test_file: test_prepared.csv
+preparation_manifest_file: preparation_manifest.json
+targets:
+  - generator_1
+  - generator_all
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+horizons_steps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96]
+frequency_minutes: 15
+features:
+  feature_set: v2_physics
+  target_lags_steps: [1, 4, 8, 16, 32, 96, 192, 672]
+target_definition:
+  mode: per_target
+  baseline: persistence
+  baseline_source: feat_current_target
+  floor_epsilon: 1.0e-6
+blend_policy:
+  alpha_registered: 0.5
+lightgbm_direct:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+prediction_policy:
+  decimal_places: 6
+output:
+  root: outputs/submissions
+  input_file: input.csv
+  long_result_file: s_result.csv
+  archive_suffix: gas_predict_semi.zip

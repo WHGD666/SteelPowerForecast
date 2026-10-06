@@ -1,0 +1,147 @@
+diagnostic_version: round2_v3_holder2_inverse_confirm_1
+status: preregistered
+experiment_role: diagnostic
+task: holder2_inverse_pressure_confirmation
+control_artifact_id: external_v29b_63_4621
+hypothesis: >-
+  The INVERSE of the failed D-078 direction, observed post hoc but consistently
+  across all four development blocks: high fold-local holder-2 boundary pressure
+  predicts that the shared-horizon tree control over-predicts far-horizon
+  generator_1 (positive actual-minus-prediction residuals), because near-boundary
+  gas-holder states lead future generation curtailment by hours.
+primary_change: >-
+  rebuild the frozen shared-horizon LightGBM control on four fresh ten-day
+  pseudo-test blocks never used in any prior analysis or hypothesis development,
+  then measure the preregistered inverse boundary-pressure relationship on the
+  rebuilt residuals; train no correction model and create no submission.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  event_feature_manifest: manifests/round2_v3/event_process_features_v1.json
+  event_feature_registry: data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+
+validation:
+  control_variant: shared_horizon_tree_rebuilt
+  target: generator_1
+  origin_frequency_minutes: 15
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  near_bucket: h015_120
+  far_bucket: h735_1440
+  minimum_boundary_history_days: 30
+  minimum_library_origins: 500
+  true_target_history_allowed: false
+  future_process_observations_allowed: false
+  blocks:
+    - fold_id: fresh_01_june_a
+      validation_start: "2025-06-11 00:00:00"
+      validation_end: "2025-06-20 23:45:00"
+    - fold_id: fresh_02_june_b
+      validation_start: "2025-06-21 00:00:00"
+      validation_end: "2025-06-30 23:45:00"
+    - fold_id: fresh_03_july_late
+      validation_start: "2025-07-18 00:00:00"
+      validation_end: "2025-07-27 23:45:00"
+    - fold_id: fresh_04_august_late
+      validation_start: "2025-08-21 00:00:00"
+      validation_end: "2025-08-30 23:45:00"
+  dev_blocks_forbidden_overlap:
+    - fold_id: pseudo_01_july_10d
+      validation_start: "2025-07-01 00:00:00"
+      validation_end: "2025-07-10 23:45:00"
+    - fold_id: pseudo_02_august_10d
+      validation_start: "2025-08-01 00:00:00"
+      validation_end: "2025-08-10 23:45:00"
+    - fold_id: pseudo_03_bf3_10d
+      validation_start: "2025-09-03 00:00:00"
+      validation_end: "2025-09-12 23:45:00"
+    - fold_id: pseudo_04_late_sep_10d
+      validation_start: "2025-09-19 00:00:00"
+      validation_end: "2025-09-28 23:45:00"
+
+tree_features:
+  - bf_production_total__level
+  - bf_production_total__delta_2h
+  - bf_production_total__delta_6h
+  - bf_production_total__std_4h
+  - bf_user_total__level
+  - bf_user_total__delta_2h
+  - bf_user_total__delta_6h
+  - generator_fuel_total__level
+  - generator_fuel_total__delta_1h
+  - generator_fuel_total__delta_4h
+  - generator_fuel_total__std_4h
+  - generator_bf_fuel__level
+  - generator_bf_fuel__delta_2h
+  - generator_converter_fuel__level
+  - holder_2__level
+  - holder_2__delta_2h
+  - holder_2__delta_6h
+  - holder_2__std_4h
+  - bf_balance_proxy__level
+  - balance_proxy_total__delta_2h
+  - balance_proxy_total__std_4h
+
+tree_control:
+  library_origin_stride_minutes: 60
+  lightgbm:
+    objective: regression_l1
+    n_estimators: 300
+    learning_rate: 0.03
+    num_leaves: 31
+    max_depth: -1
+    min_child_samples: 50
+    subsample: 0.8
+    subsample_freq: 1
+    colsample_bytree: 0.8
+    reg_alpha: 0.0
+    reg_lambda: 1.0
+    random_state: 20261005
+    n_jobs: -1
+    verbosity: -1
+    deterministic: true
+    force_col_wise: true
+    sample_weight: inverse_absolute_target
+    sample_weight_floor: 1.0
+
+boundary_contract:
+  required_columns:
+    - holder_2__level
+    - holder_2__delta_1h
+    - holder_2__delta_4h
+    - holder_2__delta_12h
+    - balance_proxy_total__level
+  reference_quantiles: [0.05, 0.95]
+  zone_quantiles: [0.10, 0.90]
+  maximum_dwell_steps: 96
+  robust_scale_floor: 1.0e-6
+  score_weights:
+    centered_position: 0.45
+    multiscale_velocity: 0.25
+    signed_boundary_dwell: 0.20
+    gas_balance_state: 0.10
+  score_extreme_quantiles: [0.25, 0.75]
+  broad_parameter_search: false
+
+inverse_diagnostic_gate:
+  maximum_pooled_far_residual_spearman: -0.08
+  maximum_positive_block_fraction: 0.25
+  maximum_pooled_high_low_far_residual_spread_pct: -1.0
+  maximum_positive_spread_block_fraction: 0.25
+  maximum_pooled_target_change_spearman: -0.05
+  maximum_positive_target_change_block_fraction: 0.25
+  minimum_extreme_group_fraction_per_block: 0.05
+  model_experiment_allowed_on_pass: true
+  platform_submission_on_pass: false
+
+budget:
+  model_count: 4
+  gpu_required: false
+  user_runs_cpu_intensive_command: true
+
+output:
+  root: outputs/round2_v3/holder2_inverse_confirm_runs
+  save_oof_predictions: true
+  append_registry: true
+  create_submission: false

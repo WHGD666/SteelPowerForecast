@@ -1,0 +1,56 @@
+diagnostic_version: round2_v3_holiday_effect_audit_1
+status: preregistered
+experiment_role: diagnostic
+task: audit_cross_holiday_generator_1_fuel_residual_transfer
+control_artifact_id: official_2025_calendar_plus_raw_training_v1
+hypothesis: >-
+  A holiday-specific generator_1 dispatch level remains after conditioning on
+  contemporaneous generator fuel use and transfers between the two independent
+  holiday blocks observed in training.
+primary_change: >-
+  learn one MAPE-optimal multiplicative fuel-proxy scale on one holiday block
+  and evaluate it without tuning on the other block, in both directions
+holdout_evaluated: false
+submission_eligible: false
+
+calendar_source:
+  title: 国务院办公厅关于2025年部分节假日安排的通知
+  document_number: 国办发明电〔2024〕12号
+  source_url: https://www.forestry.gov.cn/c/www/szxx/594663.jhtml
+  labor_observed: ["2025-05-03", "2025-05-05"]
+  dragon_boat: ["2025-05-31", "2025-06-02"]
+  national_day_test_context: ["2025-10-01", "2025-10-08"]
+
+inputs:
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+
+diagnostic:
+  target: generator_1
+  fuel_columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+  grid_minutes: 15
+  base_fit_rows: all_nonholiday_training_rows
+  correction: mape_optimal_multiplicative_scale
+  future_process_observations_allowed: false
+  test_targets_used: false
+  platform_feedback_used_for_fit: false
+
+gate:
+  require_both_transfer_directions_positive: true
+  minimum_mean_transfer_gain_pct: 0.50
+  require_scales_same_side_of_one: true
+  maximum_absolute_scale_difference: 0.05
+  minimum_rows_per_block: 200
+
+output:
+  root: outputs/round2_v3/holiday_effect_audit_runs
+  append_registry: true
+  create_submission: false
+

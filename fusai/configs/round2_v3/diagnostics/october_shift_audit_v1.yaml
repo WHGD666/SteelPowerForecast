@@ -1,0 +1,51 @@
+diagnostic_version: round2_v3_october_shift_audit_1
+status: preregistered
+experiment_role: diagnostic
+task: october_distribution_shift_localization
+control_artifact_id: external_v29b_63_4621
+hypothesis: >-
+  The recurring failure of locally-positive components to transfer to the platform
+  is driven by specific process variables whose October distributions leave the
+  support the models were trained on; locating them turns an abstract
+  distribution-shift problem into concrete modeling decisions.
+primary_change: >-
+  diagnostic only: per-column comparison of raw process variables between the
+  full training window, the September reference window, and the October test
+  window; train no model and create no submission.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  families:
+    gas:
+      train: data/raw/train/Semi_gas.csv
+      test: data/raw/test/Semi_test_gas.csv
+    gas_holder:
+      train: data/raw/train/Semi_gas_holder.csv
+      test: data/raw/test/Semi_test_gas_holder.csv
+    gas_user:
+      train: data/raw/train/Semi_gas_user.csv
+      test: data/raw/test/Semi_test_gas_user.csv
+    load:
+      train: data/raw/train/Semi_load.csv
+      test: data/raw/test/Semi_test_load.csv
+  excluded_columns:
+    - generator_1
+    - generator_all
+
+windows:
+  train_start: "2025-05-03 00:00:00"
+  train_end: "2025-09-30 23:59:59"
+  reference_start: "2025-09-01 00:00:00"
+  reference_end: "2025-09-30 23:59:59"
+  test_start: "2025-10-01 00:00:00"
+  test_end: "2025-10-10 23:59:59"
+
+metrics:
+  soft_support_quantiles: [0.005, 0.995]
+  minimum_finite_values: 100
+
+output:
+  root: outputs/round2_v3/october_shift_audit_runs
+  append_registry: true
+  create_submission: false

@@ -1,0 +1,60 @@
+submission_version: round2_v3_submission_short_dynamic_cap_probe_1
+status: user_authorized_high_risk_probe
+experiment_role: competition_probe
+source_cap_run_id: 20261004T160243Z_short_dynamic_cap_896d8696e5
+source_cap_config: configs/round2_v3/experiments/short_g1_dynamic_fuel_clip5_v1.yaml
+source_cap_manifest: outputs/round2_v3/short_dynamic_fuel_cap_runs/20261004T160243Z_short_dynamic_cap_896d8696e5/run_manifest.json
+source_dynamic_run_id: 20261004T155802Z_short_dynamic_fuel_87286d8028
+source_dynamic_config: configs/round2_v3/experiments/short_g1_dynamic_fuel_v1.yaml
+source_dynamic_manifest: outputs/round2_v3/short_dynamic_fuel_runs/20261004T155802Z_short_dynamic_fuel_87286d8028/run_manifest.json
+control_submission_id: external_v29b_63_4621
+user_override_failed_promotion_gate: true
+hypothesis: >-
+  The cross-horizon short generator_1 gain from causal dynamic-fuel OLS transfers
+  to October when its correction relative to the frozen v29b lineage is capped
+  symmetrically at five MW.
+primary_change: >-
+  replace only v29b short generator_1 with
+  v29b + clip(0.70 * (dynamic_fuel_ols - v29b), -5, +5) MW.
+known_risks:
+  - source cap experiment failed its preregistered recent-fold floor
+  - wf_05_holder1_active lost 0.253539 accuracy percentage points
+  - local OOF control is reconstructed v16 lineage rather than stored v29b OOF
+  - platform score may be lower if October resembles the failed recent fold
+  - changing short generator_1 alone is unlikely to bridge the full gap to 65
+
+sources:
+  v29b_bundle:
+    path: legacy/junior_handover_20261001_optimal_bundle/original/给学长_最优版整合(1).zip
+    sha256: 350ca90b8db4f033cb6c8772d04ff374a11e7fba8c05a92971172aa748965cce
+    member_prefix: "02_"
+    s_result_sha256: 63c1ed03a9549ec8aeb83012f21edab221dcc74ed6a459e927e2d319fa92be76
+    l_result_sha256: 088282fc08e9b9ac568983f846fa65ef26c748de18576eae1cd50107d0984da1
+  feature_manifest: manifests/round2_v3/origin_features_v1.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+
+candidate:
+  dynamic_fuel_weight: 0.70
+  correction_cap_mw: 5.0
+  recent_window_days: 21
+  round_decimals: 6
+
+frozen_blocks:
+  short_generator_all: v29b_exact_values
+  long_generator_1: v29b_exact_bytes
+  long_generator_all: v29b_exact_bytes
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  generator_all_min: 0.001
+  generator_all_max: 440.0
+  enforce_generator_1_lte_generator_all: true
+
+output:
+  root: submissions/round2_v3
+  archive_filename: 这模型调的有力量_gas_predict_semi.zip
+  encoding: utf-8
+  float_format: "%.6f"
+  zip_timestamp: [2026, 10, 5, 0, 0, 0]
+  append_registry: true

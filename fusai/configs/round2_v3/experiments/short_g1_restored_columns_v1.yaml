@@ -1,0 +1,86 @@
+experiment_version: round2_v3_short_g1_restored_columns_1
+status: preregistered
+experiment_role: scientific
+task: isolated_short_generator_1_restored_columns
+control_artifact_id: external_v29b_63_4621
+hypothesis: "Restoring the BF3/AH3 columns and complete blast-furnace balance improves the v16_final short generator_1 tree under September training."
+primary_change: "only the short generator_1 tree feature engine changes from the v16 legacy columns to the v28 restored columns"
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  legacy_v16_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi.py
+  legacy_v16_fuel_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v15_sepwindow.py
+  restored_v28_source: legacy/junior_handover_20261001_optimal_bundle/source_snapshot/src/build_submission_semi_v28.py
+
+experiment:
+  target: generator_1
+  period: short
+  control_tree: v16_legacy_columns
+  candidate_tree: v28_restored_columns
+  fuel_recipe: v16_sep_ols_weight_0.8_all_short_horizons
+  frozen_other_blocks: [short_generator_all, long_generator_1, long_generator_all]
+  future_process_observations_allowed: false
+  true_target_history_features_allowed: false
+  platform_feedback_used_for_fit: false
+
+validation:
+  strategy: recent_walk_forward
+  fold_ids: [wf_03_bf3_active, wf_04_late_september, wf_05_holder1_active]
+  primary_label: official_interval_mean
+  auxiliary_label: legacy_point
+  random_split: false
+
+horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+training:
+  g1_tree_start: "2025-09-01 00:00:00"
+  minimum_rows_per_model: 90
+  target_definition: legacy_point_at_origin_plus_horizon
+  tree_weight: 0.2
+  fuel_weight: 0.8
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 42
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+
+selection_gate:
+  minimum_component_short_g1_accuracy_gain_pct: 0.15
+  minimum_standalone_short_g1_accuracy_gain_pct: 0.50
+  minimum_single_fold_gain_pct: -0.05
+  minimum_auxiliary_legacy_point_gain_pct: 0.0
+  maximum_single_horizon_loss_pct: 0.10
+
+budget:
+  fold_count: 3
+  horizon_count: 8
+  variant_count: 2
+  expected_model_count: 48
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/short_g1_restored_runs
+  append_registry: true
+  create_submission: false

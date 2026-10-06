@@ -1,0 +1,55 @@
+experiment_version: round2_v3_component_ladder_1
+status: frozen_for_platform_ladder
+experiment_role: competition
+protocol_version: round2_v3
+control_submission_id: external_v28_61_5824
+
+hypothesis: >-
+  v29b freezes the best historically verified gall components, while v34 may
+  improve generator_1; a convex blend can reduce the regime-transfer risk of
+  replacing generator_1 outright.
+primary_change: >-
+  keep v29b generator_all exactly fixed and blend only generator_1 between
+  v29b and v34, with independently declared short and long weights.
+
+source_bundle:
+  path: legacy/junior_handover_20261001_optimal_bundle/original/给学长_最优版整合(1).zip
+  sha256: 350ca90b8db4f033cb6c8772d04ff374a11e7fba8c05a92971172aa748965cce
+  components:
+    v29b:
+      member_prefix: "02_"
+      role: projected_anchor_not_officially_submitted
+      s_result_sha256: 63c1ed03a9549ec8aeb83012f21edab221dcc74ed6a459e927e2d319fa92be76
+      l_result_sha256: 088282fc08e9b9ac568983f846fa65ef26c748de18576eae1cd50107d0984da1
+    v34:
+      member_prefix: "03_"
+      role: development_candidate_not_officially_submitted
+      s_result_sha256: 142f76fd0e2849ad4c9e7139bf59083dd53454105427fa3c01e83156e78dd36d
+      l_result_sha256: 80ab6fa5c71f80bfd92aab9920991e61d5c29434f82fa3bd08f4f846184da4a3
+
+blend_contract:
+  base_component: v29b
+  alternate_component: v34
+  mutable_target: generator_1
+  frozen_target: generator_all
+  allowed_weights: [0.0, 0.25, 0.5, 1.0]
+  round_decimals: 6
+
+platform_ladder:
+  step_0: "submit anchor w_short=0.0, w_long=0.0"
+  step_1: "submit w_short=0.0, w_long=0.5"
+  if_step_1_improves: "test w_long=1.0; otherwise retain the better of 0.5 and 1.0"
+  if_step_1_worsens: "test w_long=0.25 instead of 1.0"
+  final_short_probe: "on the best long weight, test short weight 0.5; escalate to 1.0 only if it improves"
+
+stop_conditions:
+  - "anchor score is materially below its projected range; stop and audit the projection before blending"
+  - "a changed candidate violates schema, time, finite-value or physical contracts"
+  - "long weight 0.5 degrades the anchor; do not jump directly to weight 1.0"
+  - "do not infer component scores from total score; only infer the direction of the single changed block"
+
+output:
+  root: outputs/round2_v3/component_ladder_runs
+  archive_filename: 这模型调的有力量_gas_predict_semi.zip
+  float_format: "%.6f"
+  zip_timestamp: [2026, 10, 2, 0, 0, 0]

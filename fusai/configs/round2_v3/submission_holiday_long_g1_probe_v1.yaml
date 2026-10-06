@@ -1,0 +1,67 @@
+submission_version: round2_v3_submission_holiday_long_g1_probe_1
+status: preregistered_platform_candidate
+experiment_role: competition_probe
+source_diagnostic_run_id: 20261004T153231Z_holiday_audit_75f9b001b3
+source_diagnostic_config: configs/round2_v3/diagnostics/holiday_effect_audit_v1.yaml
+source_diagnostic_manifest: outputs/round2_v3/holiday_effect_audit_runs/20261004T153231Z_holiday_audit_75f9b001b3/run_manifest.json
+control_submission_id: external_v29b_63_4621
+hypothesis: >-
+  A conservative holiday-specific downward correction to the deployed v28
+  generator_1 fuel component transfers from the independent Labor Day and
+  Dragon Boat blocks to the October National Day target interval.
+primary_change: >-
+  change only v29b long generator_1 cells whose 15-minute target interval
+  starts on 2025-10-01 through 2025-10-08 by scaling the September OLS fuel
+  component from 1.00 to the preregistered fixed value 0.95.
+known_risks:
+  - the passed diagnostic evaluates a raw fuel proxy rather than the exact v29b out-of-fold prediction
+  - National Day steel production and dispatch may not transfer from the two spring holiday blocks
+
+holiday_correction:
+  target_interval_start: "2025-10-01 00:00:00"
+  target_interval_end: "2025-10-08 23:59:59"
+  fixed_scale: 0.95
+  fuel_fit_start: "2025-09-01 00:00:00"
+  near_horizon_max_minutes: 30
+  near_weight: 0.8
+  far_weight: 0.6
+  formula: v29b_long_g1 + fuel_weight_h * (fixed_scale - 1) * september_ols_fuel_at_origin
+
+sources:
+  v29b_bundle:
+    path: legacy/junior_handover_20261001_optimal_bundle/original/给学长_最优版整合(1).zip
+    sha256: 350ca90b8db4f033cb6c8772d04ff374a11e7fba8c05a92971172aa748965cce
+    member_prefix: "02_"
+    s_result_sha256: 63c1ed03a9549ec8aeb83012f21edab221dcc74ed6a459e927e2d319fa92be76
+    l_result_sha256: 088282fc08e9b9ac568983f846fa65ef26c748de18576eae1cd50107d0984da1
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  raw_test_tables:
+    - data/raw/test/Semi_test_gas.csv
+    - data/raw/test/Semi_test_gas_holder.csv
+    - data/raw/test/Semi_test_gas_user.csv
+    - data/raw/test/Semi_test_load.csv
+
+frozen_blocks:
+  short_generator_1: v29b_exact_bytes
+  short_generator_all: v29b_exact_bytes
+  long_generator_all: v29b_exact_values
+  long_generator_1_outside_holiday_target_intervals: v29b_exact_values
+
+physical_projection:
+  generator_1_min: 0.001
+  generator_1_max: 200.0
+  generator_all_min: 0.001
+  generator_all_max: 440.0
+  enforce_generator_1_lte_generator_all: true
+
+output:
+  root: submissions/round2_v3
+  archive_filename: 这模型调的有力量_gas_predict_semi.zip
+  float_format: "%.6f"
+  zip_timestamp: [2026, 10, 4, 0, 0, 0]
+  append_registry: true

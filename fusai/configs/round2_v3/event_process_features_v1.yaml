@@ -1,0 +1,20 @@
+feature_version: round2_v3_event_process_features_1
+status: frozen_for_event_signal_ablation
+source_artifact: round2_v3_causal_base_1
+origin_frequency: 15min
+target_history_included: false
+future_observations_included: false
+
+history:
+  delta_hours: [1, 2, 4, 6, 12]
+  volatility_hours: [1, 4]
+  level_baseline_hours: 168
+
+output:
+  directory: data/prepared/round2_v3_event_process_features_1
+  train_file: train_event_process_features.csv
+  test_file: test_event_process_features.csv
+  registry_file: event_process_feature_registry.csv
+  float_format: "%.9g"
+  overwrite: false
+

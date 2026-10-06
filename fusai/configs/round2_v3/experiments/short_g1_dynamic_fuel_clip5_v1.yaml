@@ -1,0 +1,42 @@
+experiment_version: round2_v3_short_g1_dynamic_fuel_clip5_1
+status: preregistered
+experiment_role: scientific
+task: short_generator_1_dynamic_fuel_safety_cap
+control_run_id: 20261004T155802Z_short_dynamic_fuel_87286d8028
+hypothesis: >-
+  Symmetrically limiting the dynamic-fuel correction to five MW preserves its
+  cross-horizon gain while preventing the extreme September 25-27 regime failure.
+primary_change: >-
+  clip only the already-frozen 70/30 candidate minus v16 control correction to
+  the preregistered interval [-5, +5] MW.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  source_manifest: outputs/round2_v3/short_dynamic_fuel_runs/20261004T155802Z_short_dynamic_fuel_87286d8028/run_manifest.json
+  source_oof: outputs/round2_v3/short_dynamic_fuel_runs/20261004T155802Z_short_dynamic_fuel_87286d8028/oof_predictions.csv
+
+scope:
+  period: short
+  target: generator_1
+  control_variant: v16_control
+  source_candidate_variant: blend_dynamic70_v16control30
+  promotion_candidate: blend_dynamic70_v16control30_clip5mw
+  fold_ids: [wf_03_bf3_active, wf_04_late_september, wf_05_holder1_active]
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+  correction_cap_mw: 5.0
+  broad_cap_search: false
+
+selection_gate:
+  minimum_short_g1_accuracy_gain_pct: 1.0
+  minimum_single_fold_gain_pct: -0.20
+  minimum_single_horizon_gain_pct: -0.20
+  maximum_ordinary_origin_accuracy_loss_pct: 0.20
+  minimum_event_improvement_fraction: 0.50
+  minimum_evaluated_event_count: 2
+  platform_submission_on_pass: false
+
+output:
+  root: outputs/round2_v3/short_dynamic_fuel_cap_runs
+  append_registry: true
+  create_submission: false

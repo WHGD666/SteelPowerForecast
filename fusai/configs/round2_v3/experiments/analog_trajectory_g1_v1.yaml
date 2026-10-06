@@ -1,0 +1,126 @@
+experiment_version: round2_v3_analog_trajectory_g1_1
+status: preregistered
+experiment_role: scientific
+task: long_generator_1_historical_analog_trajectory
+control_artifact_id: external_v29b_63_4621
+hypothesis: >-
+  Causal process-state analogs observed before an origin contain information
+  about the following 24-hour generator_1 trajectory that a shared regression
+  tree misses, especially around operating-regime transitions.
+primary_change: >-
+  add a fixed 25 percent historical analog trajectory to a 75 percent shared
+  horizon LightGBM control trained on the identical feature and label contract.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  event_feature_manifest: manifests/round2_v3/event_process_features_v1.json
+  event_feature_registry: data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+
+validation:
+  strategy: four_contiguous_ten_day_pseudo_tests
+  origin_frequency_minutes: 15
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  blocks:
+    - fold_id: pseudo_01_july_10d
+      validation_start: "2025-07-01 00:00:00"
+      validation_end: "2025-07-10 23:45:00"
+    - fold_id: pseudo_02_august_10d
+      validation_start: "2025-08-01 00:00:00"
+      validation_end: "2025-08-10 23:45:00"
+    - fold_id: pseudo_03_bf3_10d
+      validation_start: "2025-09-03 00:00:00"
+      validation_end: "2025-09-12 23:45:00"
+    - fold_id: pseudo_04_late_sep_10d
+      validation_start: "2025-09-19 00:00:00"
+      validation_end: "2025-09-28 23:45:00"
+  target: generator_1
+  true_target_history_allowed: false
+  future_process_observations_allowed: false
+  library_full_horizon_must_end_before_block: true
+
+analog_features:
+  columns:
+    - bf_production_total__level
+    - bf_production_total__delta_2h
+    - bf_production_total__delta_6h
+    - bf_production_total__std_4h
+    - bf_user_total__level
+    - bf_user_total__delta_2h
+    - bf_user_total__delta_6h
+    - generator_fuel_total__level
+    - generator_fuel_total__delta_1h
+    - generator_fuel_total__delta_4h
+    - generator_fuel_total__std_4h
+    - generator_bf_fuel__level
+    - generator_bf_fuel__delta_2h
+    - generator_converter_fuel__level
+    - holder_2__level
+    - holder_2__delta_2h
+    - holder_2__delta_6h
+    - holder_2__std_4h
+    - bf_balance_proxy__level
+    - balance_proxy_total__delta_2h
+    - balance_proxy_total__std_4h
+  add_origin_hour_cyclic: true
+  origin_hour_weight: 1.5
+  add_origin_dayofweek_cyclic: true
+  origin_dayofweek_weight: 0.5
+  robust_scale_floor: 1.0e-6
+
+analog:
+  library_origin_stride_minutes: 60
+  nearest_neighbors: 24
+  maximum_neighbors_per_source_day: 2
+  distance_weight: inverse
+  distance_epsilon: 1.0e-6
+  broad_parameter_search: false
+
+variants:
+  control: shared_horizon_tree
+  diagnostic_analog: historical_analog
+  promotion_candidate: blend_analog25_tree75
+  analog_weight: 0.25
+  control_weight: 0.75
+
+lightgbm:
+  objective: regression_l1
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  max_depth: -1
+  min_child_samples: 50
+  subsample: 0.8
+  subsample_freq: 1
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 1.0
+  random_state: 20261005
+  n_jobs: -1
+  verbosity: -1
+  deterministic: true
+  force_col_wise: true
+  sample_weight: inverse_absolute_target
+  sample_weight_floor: 1.0
+
+selection_gate:
+  minimum_long_g1_accuracy_gain_pct: 0.8
+  minimum_single_block_gain_pct: 0.0
+  minimum_winning_block_fraction: 0.75
+  maximum_near_far_accuracy_loss_pct: 0.2
+  minimum_neighbor_source_days: 10
+  platform_submission_on_pass: false
+
+budget:
+  fold_count: 4
+  model_count: 4
+  gpu_required: false
+  user_runs_cpu_intensive_command: true
+
+output:
+  root: outputs/round2_v3/analog_trajectory_runs
+  save_models: false
+  save_oof_predictions: true
+  append_registry: true
+  create_submission: false

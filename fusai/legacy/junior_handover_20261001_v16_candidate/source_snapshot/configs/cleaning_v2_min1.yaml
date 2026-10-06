@@ -1,0 +1,57 @@
+# IronFlow 复赛清洗配置 v2（新建）
+# 冻结纪律：本文件为复赛新增，configs/cleaning_v1.yaml 冻结不动、逐字节保留。
+# 已核实事实：复赛原始数据为 1 分钟粒度；训练期 2025-05-03 ~ 2025-09-30，测试期 2025-10-01 ~ 2025-10-10；
+#   训练/测试之间无重复边界行（train max 2025-09-30 23:59，test min 2025-10-01 00:00）。
+# 待确认（Q2/Q4）：原始 1 分钟数据到 15 分钟预测口径的重采样方式待官方确认；
+#   1min 口径: limit_steps 60 = 冻结纪律 4x15min 的语义等价(1小时), 严格因果表示"复赛无边界上下文重复行"。
+cleaning_version: v2
+status: semi-pending-official-confirmation
+data_prefix: Semi
+test_data_prefix: Semi_test
+source_policy:
+  raw_data_read_only: true
+  output_directory: outputs/prepared_v2_min1
+time:
+  column: datetime
+  frequency: 1min
+  boundary_context_timestamp: null
+targets:
+  - generator_1
+  - generator_all
+source_families:
+  - gas
+  - gas_holder
+  - gas_user
+  - load
+exclude_all_empty_columns:
+  - blast_furnace_3
+  - air_heater_3
+  - blast_furnace_gas_holder_1
+  - converter_user3
+missing_policy:
+  covariates:
+    method: causal_forward_fill
+    limit_steps: 60
+    create_missing_indicators: true
+  targets:
+    preserve_raw_missing: true
+    create_current_observation_feature: true
+    current_observation_fill: causal_forward_fill
+    limit_steps: 60
+  inserted_timestamps:
+    create_indicator: true
+outlier_policy:
+  mutate_values: false
+  global_thresholds_for_validation: forbidden
+  action: fit_flags_or_caps_inside_each_training_fold_only
+duplicate_policy:
+  duplicate_timestamp: error
+  duplicate_full_row: error
+output:
+  train_file: train_prepared.csv
+  test_file: test_prepared.csv
+  input_file: input.csv
+  manifest_file: preparation_manifest.json
+  encoding: utf-8
+  input_exclude_diagnostic_columns:
+    - feat_boundary_context_overlap

@@ -1,0 +1,42 @@
+{
+  "all_features_causal": true,
+  "artifact_version": "round2_v3_event_process_features_1",
+  "base_manifest": "data/prepared/round2_v3_causal_base_1/manifest.json",
+  "base_manifest_sha256": "68c28df1748d37e2aaa1f900c4e3c89ba1e78c107ee3da1858b5cb778c346bc2",
+  "config": "configs/round2_v3/event_process_features_v1.yaml",
+  "config_sha256": "759749f2db62330277c072e96492b150ac46376274d5a2972cf56e0c412f241e",
+  "feature_count": 196,
+  "future_observations_included": false,
+  "maximum_source_time_offset_minutes": 0,
+  "minimum_source_time_offset_minutes": -10065,
+  "partitions": [
+    {
+      "columns": 197,
+      "datetime_max": "2025-09-30T23:45:00",
+      "datetime_min": "2025-05-03T00:00:00",
+      "output": "data/prepared/round2_v3_event_process_features_1/train_event_process_features.csv",
+      "output_sha256": "bdcb74e7f2e23f325664c2f4e29547c1b8d9ea38a2c8c3d265e99ea022f82b6f",
+      "partition": "train",
+      "rows": 14496,
+      "source": "data/prepared/round2_v3_causal_base_1/train_causal_base_1min.csv",
+      "source_encoding": "utf-8-sig",
+      "source_sha256": "6f71092d5eadf9265289c087c3a65a33f5cffca19c1d8f9b40e1aaee2176c7b1"
+    },
+    {
+      "columns": 197,
+      "datetime_max": "2025-10-10T23:45:00",
+      "datetime_min": "2025-10-01T00:00:00",
+      "output": "data/prepared/round2_v3_event_process_features_1/test_event_process_features.csv",
+      "output_sha256": "94e95e117375067a69d7287b246e77cdeba786b7b88103a7a71cb64f48858d01",
+      "partition": "test",
+      "rows": 960,
+      "source": "data/prepared/round2_v3_causal_base_1/test_causal_base_1min.csv",
+      "source_encoding": "utf-8-sig",
+      "source_sha256": "ef6f29c2a42c359422387e9d30764e16f6f4a21f1ddd7dc8d38211b5fef40196"
+    }
+  ],
+  "registry": "data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv",
+  "registry_sha256": "7be14b781c58be2a04c9af3da864ae51f164dde667c0de42c52e25099da996ec",
+  "target_history_included": false,
+  "train_test_history_continuity": true
+}

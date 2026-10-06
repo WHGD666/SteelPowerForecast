@@ -1,0 +1,73 @@
+experiment_version: round2_v3_short_g1_fuel_trend_1
+status: preregistered
+experiment_role: scientific
+task: isolated_short_generator_1_damped_fuel_trend
+control_artifact_id: external_v29b_short_g1_v16_lineage
+control_run_id: 20261004T102800Z_short_g1_restored_1fb7013867
+hypothesis: >-
+  A low-freedom extrapolation of the latest one-hour generator-fuel trend
+  improves short generator_1 without the regime instability of a fitted
+  horizon-specific dynamic regression.
+primary_change: >-
+  adjust only the v16-lineage short generator_1 prediction by the fold-local
+  fuel proxy's damped one-hour trend, retaining the v16 0.8 fuel weight and a
+  preregistered symmetric five-MW safety cap.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  raw_fingerprints: manifests/round2_v3/data_fingerprints.json
+  raw_train_tables:
+    - data/raw/train/Semi_gas.csv
+    - data/raw/train/Semi_gas_holder.csv
+    - data/raw/train/Semi_gas_user.csv
+    - data/raw/train/Semi_load.csv
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  control_manifest: outputs/round2_v3/short_g1_restored_runs/20261004T102800Z_short_g1_restored_1fb7013867/run_manifest.json
+  control_oof: outputs/round2_v3/short_g1_restored_runs/20261004T102800Z_short_g1_restored_1fb7013867/oof_predictions.csv
+
+scope:
+  period: short
+  target: generator_1
+  control_variant: v16_legacy_columns
+  promotion_candidate: damped_fuel_trend_clip5mw
+  fold_ids: [wf_03_bf3_active, wf_04_late_september, wf_05_holder1_active]
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120]
+  generator_all_changed: false
+  long_outputs_changed: false
+  future_process_observations_allowed: false
+  true_target_history_allowed: false
+
+fuel_trend:
+  columns:
+    - generator_use_blast_furnace_gas
+    - generator_use_coke_gas
+    - generator_use_converter_gas
+  fuel_proxy_fit_start: "2025-09-01 00:00:00"
+  lag_minutes: 60
+  full_extrapolation_minutes: 60
+  maximum_extrapolation_factor: 1.0
+  v16_fuel_weight: 0.8
+  symmetric_correction_cap_mw: 5.0
+  broad_parameter_search: false
+
+selection_gate:
+  minimum_short_g1_accuracy_gain_pct: 0.50
+  minimum_single_fold_gain_pct: -0.10
+  minimum_single_horizon_gain_pct: -0.10
+  maximum_ordinary_origin_accuracy_loss_pct: 0.10
+  minimum_event_improvement_fraction: 0.50
+  minimum_evaluated_event_count: 2
+  platform_submission_on_pass: false
+
+budget:
+  fold_count: 3
+  fuel_proxy_fit_count: 3
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/short_fuel_trend_runs
+  append_registry: true
+  create_submission: false

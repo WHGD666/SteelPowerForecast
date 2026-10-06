@@ -77,7 +77,7 @@ def main() -> None:
         f"submission_id={args.submission_id} archive_sha256={artifacts['archive_sha256']} "
         f"short={short_report['rows']}x{short_report['columns']} "
         f"long={long_report['rows']}x{long_report['columns']} "
-        "models=4 zip_members=2"
+        f"models={len(manifest['training'])} zip_members=2"
     )
 
 

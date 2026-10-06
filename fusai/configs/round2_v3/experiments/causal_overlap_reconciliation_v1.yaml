@@ -1,0 +1,53 @@
+experiment_version: round2_v3_causal_overlap_reconciliation_1
+status: preregistered
+experiment_role: scientific
+task: causal_overlap_forecast_reconciliation
+control_artifact_id: external_v29b_63_4621
+hypothesis: >-
+  Forecasts issued 15 minutes apart for the same future target time contain
+  complementary error, and a causal recursive consensus reduces long-horizon MAPE.
+primary_change: >-
+  blend each current forecast with the already-issued previous-origin forecast
+  for the same target time; no model, feature, label or process observation changes.
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+  targets:
+    generator_1:
+      oof: outputs/round2_v3/anomaly_weight_runs/20261004T092221Z_anomaly_weight_g1_e6563a0b55/oof_predictions.csv
+      sha256: 672dc4ab36f1e2352826f44b3f2411a3d199b40078d5e3c856a0fddd36aeb917
+      source_variant: control_weight1
+    generator_all:
+      oof: outputs/round2_v3/long_gall_shared_runs/20261004T125203Z_long_gall_shared_c83510959a/oof_predictions.csv
+      sha256: 02c73da5ec393539c5d75145b3d92eda86ab8cb327856be8775b4664b38660e6
+      source_variant: v20_per_horizon_control
+
+validation:
+  fold_ids: [wf_03_bf3_active, wf_04_late_september, wf_05_holder1_active]
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  origin_frequency_minutes: 15
+  primary_label: actual_interval_mean
+  auxiliary_label: actual_legacy_point
+
+reconciliation:
+  control_variant: base_forecast
+  primary_alpha_current: 0.50
+  sensitivity_alpha_current: [0.25, 0.75]
+  recursive_previous_output: true
+  reset_at_fold_or_time_gap: true
+
+selection_gate:
+  primary_target: generator_1
+  minimum_accuracy_gain_pct: 0.30
+  minimum_single_fold_gain_pct: 0.00
+  maximum_ordinary_accuracy_loss_pct: 0.10
+  maximum_near_far_accuracy_loss_pct: 0.10
+  require_majority_episode_improvement: true
+
+output:
+  root: outputs/round2_v3/overlap_reconciliation_runs
+  append_registry: true
+  create_submission: false
+

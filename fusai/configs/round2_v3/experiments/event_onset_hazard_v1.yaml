@@ -1,0 +1,105 @@
+experiment_version: round2_v3_event_onset_hazard_1
+status: preregistered
+experiment_role: diagnostic
+task: causal_episode_onset_hazard
+hypothesis: "A compact set of causal gas-system dynamics predicts held-out low-fuel episode onsets 2 to 24 hours ahead better than calendar-only risk."
+primary_change: "add 21 preregistered causal process features to an otherwise identical calendar-only logistic hazard model"
+holdout_evaluated: false
+submission_eligible: false
+
+inputs:
+  event_feature_manifest: manifests/round2_v3/event_process_features_v1.json
+  event_feature_registry: data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+
+horizons_minutes: [120, 360, 720, 1440]
+
+feature_groups:
+  calendar_only:
+    - calendar_hour_sin
+    - calendar_hour_cos
+    - calendar_dow_sin
+    - calendar_dow_cos
+    - calendar_is_weekend
+  compact_process:
+    - bf_production_total__level_vs_168h
+    - bf_production_total__delta_4h
+    - bf_production_total__delta_6h
+    - bf_production_total__std_4h
+    - generator_fuel_total__level_vs_168h
+    - generator_fuel_total__delta_1h
+    - generator_fuel_total__std_4h
+    - generator_bf_fuel__level
+    - generator_bf_fuel__std_4h
+    - generator_converter_fuel__delta_2h
+    - holder_2__level_vs_168h
+    - holder_2__delta_6h
+    - holder_2__delta_12h
+    - bf_balance_proxy__level
+    - bf_balance_proxy__std_4h
+    - balance_proxy_total__delta_2h
+    - balance_proxy_total__std_4h
+    - bf_user_total__delta_1h
+    - mixed_gas_total__delta_2h
+
+models:
+  control: calendar_only
+  candidate: calendar_plus_compact_process
+  promotion_candidate: calendar_plus_compact_process
+  broad_model_search: false
+
+episode_folds:
+  - fold_id: hazard_01_july_august
+    validation_episode_ids: [train_episode_06, train_episode_07]
+  - fold_id: hazard_02_august
+    validation_episode_ids: [train_episode_08, train_episode_09]
+  - fold_id: hazard_03_mid_september
+    validation_episode_ids: [train_episode_10, train_episode_11]
+  - fold_id: hazard_04_late_september
+    validation_episode_ids: [train_episode_12, train_episode_13]
+
+label:
+  definition: "episode_start is strictly after origin and no later than origin plus horizon"
+  split_unit: episode
+  maximum_horizon_embargo_minutes: 1440
+  use_active_event_as_positive: false
+
+logistic_regression:
+  C: 0.1
+  penalty: l2
+  solver: lbfgs
+  class_weight: balanced
+  max_iter: 2000
+  random_state: 42
+
+alert_policy:
+  training_probability_top_fraction: 0.10
+  threshold_fit_inside_fold: true
+  platform_feedback_used: false
+
+selection_gate:
+  primary_horizon_minutes: 1440
+  secondary_horizon_minutes: 360
+  minimum_primary_average_precision_lift: 1.5
+  minimum_primary_ap_gain_vs_calendar: 0.02
+  minimum_primary_precision_lift: 1.5
+  minimum_primary_recall: 0.50
+  minimum_primary_episode_detection_fraction: 0.75
+  minimum_primary_fold_win_fraction: 0.75
+  minimum_secondary_average_precision_lift: 1.5
+  minimum_secondary_episode_detection_fraction: 0.50
+  maximum_validation_alert_fraction: 0.15
+  next_action_on_pass: build_hazard_conditioned_residual_correction
+  next_action_on_fail: close_event_hazard_route
+
+budget:
+  fold_count: 4
+  horizon_count: 4
+  model_count_per_fold_horizon: 2
+  expected_model_count: 32
+  gpu_required: false
+
+output:
+  root: outputs/round2_v3/event_hazard_runs
+  append_registry: true
+  create_submission: false

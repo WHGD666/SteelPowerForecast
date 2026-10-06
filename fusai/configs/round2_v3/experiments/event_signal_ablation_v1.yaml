@@ -1,0 +1,96 @@
+experiment_version: round2_v3_event_signal_ablation_1
+status: pre_registered_not_run
+experiment_role: scientific
+control_run_id: 20260929T124936Z_r2v3_baseline_46e02afe85
+external_reference_artifact_id: external_v29b_63_4621
+task: long_generator_1_process_signal_ablation
+hypothesis: >-
+  A compact set of causal gas-production, generator-fuel, holder-2 and gas-balance
+  dynamics improves long generator_1 on independent low-fuel episodes without
+  degrading ordinary origins.
+
+inputs:
+  baseline_config: configs/round2_v3/baseline_v1.yaml
+  base_feature_manifest: manifests/round2_v3/origin_features_v1.json
+  base_feature_registry: data/prepared/round2_v3_origin_features_1/feature_registry.csv
+  event_feature_manifest: manifests/round2_v3/event_process_features_v1.json
+  event_feature_registry: data/prepared/round2_v3_event_process_features_1/event_process_feature_registry.csv
+  label_manifest: manifests/round2_v3/prepared_labels_v3.json
+  split_manifest: manifests/round2_v3/splits_v3.json
+  split_assignments: manifests/round2_v3/validation_origins_v3.csv
+  event_episodes: manifests/round2_v3/step_event_episodes_v1.csv
+
+frozen_scope:
+  period: long
+  target: generator_1
+  horizons_minutes: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200, 1215, 1230, 1245, 1260, 1275, 1290, 1305, 1320, 1335, 1350, 1365, 1380, 1395, 1410, 1425, 1440]
+  short_outputs_changed: false
+  generator_all_changed: false
+  true_target_history_allowed: false
+  predicted_target_feedback_allowed: false
+
+feature_groups:
+  bf_production:
+    - bf_production_total__level_vs_168h
+    - bf_production_total__delta_4h
+    - bf_production_total__delta_6h
+    - bf_production_total__std_4h
+  generator_fuel:
+    - generator_fuel_total__level_vs_168h
+    - generator_fuel_total__delta_1h
+    - generator_fuel_total__std_4h
+    - generator_bf_fuel__level
+    - generator_bf_fuel__std_4h
+    - generator_converter_fuel__delta_2h
+  holder_2:
+    - holder_2__level_vs_168h
+    - holder_2__delta_6h
+    - holder_2__delta_12h
+  gas_balance:
+    - bf_balance_proxy__level
+    - bf_balance_proxy__std_4h
+    - balance_proxy_total__delta_2h
+    - balance_proxy_total__std_4h
+  user_and_mixed_gas:
+    - bf_user_total__delta_1h
+    - mixed_gas_total__delta_2h
+
+comparison_order:
+  - control
+  - control_plus_bf_production
+  - control_plus_generator_fuel
+  - control_plus_holder_2
+  - control_plus_gas_balance
+  - control_plus_user_and_mixed_gas
+  - control_plus_compact_union
+
+event_protocol:
+  source_diagnostic_run_id: 20261004T052259Z_step_event_audit_0057a685f6
+  legacy_ratio_threshold: 0.80
+  independent_episode_count: 13
+  split_unit: episode
+  refit_event_definition_inside_training_fold: true
+  ordinary_origin_control_required: true
+
+selection_gate:
+  minimum_long_g1_accuracy_gain_pct: 0.8
+  maximum_ordinary_origin_accuracy_loss_pct: 0.2
+  require_recent_fold_non_degradation: true
+  require_majority_episode_improvement: true
+  require_near_far_safety_check: true
+  platform_submission_on_pass: false
+  next_action_on_pass: build_single_component_candidate_against_frozen_v29b
+
+budget:
+  model_family: lightgbm_shared_horizon
+  seeds: [42]
+  broad_hyperparameter_search: false
+  maximum_feature_group_comparisons: 6
+  user_runs_cpu_intensive_command: true
+
+output:
+  root: outputs/round2_v3/event_signal_ablation_runs
+  save_models: false
+  save_oof_predictions: true
+  append_registry: true
+
